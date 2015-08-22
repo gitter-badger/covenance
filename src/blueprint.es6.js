@@ -8,7 +8,7 @@ let blueprint =  mixin_a_lot.make_mixin({
 
   name: 'blueprint',
 
-  premixing_hook: () => {
+  premixing_hook() {
     let blueprints = this[BLUEPRINT_PROPERTY];
 
     if (!Array.isArray(blueprints)) {
