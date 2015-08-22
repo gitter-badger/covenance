@@ -1,12 +1,11 @@
-import merge from 'utilities'
-
-
-class Scheme {
-  constructor({attribute, predicate}) {
-    this.attribute = attribute;
-    this.predicate = predicate;
+let merge = (obj1, obj2) => {
+  for (let key in obj2) {
+    if (obj2.hasOwnProperty(key)) {
+      obj1[key] = obj2[key];
+    }
   }
-}
+  return obj1;
+};
 
 let immutable_typed_descriptor = ({property, type}) => {
   let set_immutably = (key, value) => {
@@ -39,12 +38,4 @@ let immutable_typed_descriptor = ({property, type}) => {
 };
 
 
-let scheme_descriptors = merge(
-  immutable_typed_descriptor({property: 'attribute', type: 'string'}),
-  immutable_typed_descriptor({property: 'predicate', type: 'function'}));
-
-
-Object.defineProperties(Scheme.prototype, scheme_descriptors);
-
-
-export default Scheme
+export default {merge, immutable_typed_descriptor};
