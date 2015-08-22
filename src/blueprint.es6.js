@@ -23,10 +23,7 @@ let blueprint =  mixin_a_lot.make_mixin({
 
   validate_blueprint() {
     for (let scheme of this[BLUEPRINT_PROPERTY]) {
-      let [predicate, attribute] = [
-        scheme.predicate,
-        scheme.attribute
-      ];
+      let [predicate, attribute] = [scheme.predicate, scheme.attribute];
       let predicate_check = `${predicate}(${this[attribute]})`;
       if (!eval(predicate_check)) {
         throw new Error(`Expected '${predicate_check}' to return true`);
