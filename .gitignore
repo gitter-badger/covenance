@@ -1,7 +1,4 @@
 .idea
 node_modules
 *.log
-
-**/*.js
-!src/**/*.es6.js
-!*.babel.js
+dist/

@@ -3,7 +3,7 @@ import babel from 'gulp-babel';
 import rename from 'gulp-rename';
 
 
-let [SRC, DST] = ['src', '.'];
+let [SRC, DST] = ['src', 'dist'];
 
 gulp.task('test', () => {
   //throw new Error("Write me!");

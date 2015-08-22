@@ -26,5 +26,5 @@
   "dependencies": {
     "mixin-a-lot": "^1.0.12"
   },
-  "main": "blueprint.js"
+  "main": "dist/blueprint.js"
 }
