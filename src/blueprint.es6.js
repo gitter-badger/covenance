@@ -3,7 +3,6 @@ import Scheme from '../scheme';
 
 
 let BLUEPRINT_PROPERTY = 'blueprint';
-
 let blueprint =  mixin_a_lot.make_mixin({
 
   name: 'blueprint',
@@ -22,12 +21,17 @@ let blueprint =  mixin_a_lot.make_mixin({
     }
   },
 
-  validate_class: () => {
-
-  },
-
-  validate_proto: () => {
-
+  validate_blueprint() {
+    for (let scheme of this[BLUEPRINT_PROPERTY]) {
+      let [predicate, attribute] = [
+        scheme.predicate,
+        scheme.attribute
+      ];
+      let predicate_check = `${predicate}(${this[attribute]})`;
+      if (!eval(predicate_check)) {
+        throw new Error(`Expected '${predicate_check}' to return true`);
+      }
+    }
   }
 
 });
