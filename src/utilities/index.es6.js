@@ -7,16 +7,9 @@ let merge = (obj1, obj2) => {
   return obj1
 };
 
-let immutable_descriptor_set = (property, {type} = {}) => {
-  let set_immutably = (obj, key, value) => {
-    if (obj[key] === null) {
-      obj[key] = value
-    } else {
-      throw new Error(`${key} is immutable`)
-    }
-  };
-
-  let privatized = `__${property}`;
+let immutable_descriptor_set = (property) => {
+  let privatized = Symbol(property);
+  let dirty = false;
 
   return {
     [privatized]: {
@@ -30,12 +23,11 @@ let immutable_descriptor_set = (property, {type} = {}) => {
         return this[privatized];
       },
       set(value) {
-        if (typeof type === 'string') {
-          if (typeof value !== type) {
-            throw new Error(`Expected ${value} to be a ${type}`);
-          }
+        if (dirty) {
+          throw new Error(`${property} is immutable`)
         }
-        set_immutably(this, privatized, value);
+        dirty = true;
+        this[privatized] = value
       }
     }
   }
