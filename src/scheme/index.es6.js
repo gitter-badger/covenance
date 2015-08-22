@@ -1,4 +1,4 @@
-import {merge, immutable_typed_descriptor} from '../utilities'
+import {merge, immutable_descriptor} from '../utilities'
 
 
 class Scheme {
@@ -8,9 +8,9 @@ class Scheme {
   }
 }
 
-let descriptors = merge(
-  immutable_typed_descriptor({property: 'attribute', type: 'string'}),
-  immutable_typed_descriptor({property: 'predicate', type: 'function'}));
+let attribute_descriptor = immutable_descriptor('attribute', {type: 'string'});
+let predicate_descriptor = immutable_descriptor('predicate', {type: 'string'});
+let descriptors = merge(attribute_descriptor, predicate_descriptor);
 
 Object.defineProperties(Scheme.prototype, descriptors);
 

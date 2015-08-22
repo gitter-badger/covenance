@@ -7,7 +7,7 @@ let merge = (obj1, obj2) => {
   return obj1
 };
 
-let immutable_typed_descriptor = ({property, type}) => {
+let immutable_descriptor = (property, {type}) => {
   let set_immutably = (key, value) => {
     if (this[key] === null) {
       this[key] = value
@@ -30,14 +30,16 @@ let immutable_typed_descriptor = ({property, type}) => {
         return this[privatized];
       },
       set(value) {
-        if (typeof value !== type) {
-          throw new Error(`Expected ${value} to be a ${type}`);
+        if (typeof type === 'string') {
+          if (typeof value !== type) {
+            throw new Error(`Expected ${value} to be a ${type}`);
+          }
         }
         set_immutably(privatized, value);
       }
     }
   }
-}
+};
 
 
-export default {merge, immutable_typed_descriptor}
+export default {merge, immutable_descriptor}
