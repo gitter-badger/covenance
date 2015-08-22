@@ -7,10 +7,10 @@ let merge = (obj1, obj2) => {
   return obj1
 };
 
-let immutable_descriptor = (property, {type}) => {
-  let set_immutably = (key, value) => {
-    if (this[key] === null) {
-      this[key] = value
+let immutable_descriptor_set = (property, {type} = {}) => {
+  let set_immutably = (obj, key, value) => {
+    if (obj[key] === null) {
+      obj[key] = value
     } else {
       throw new Error(`${key} is immutable`)
     }
@@ -35,11 +35,11 @@ let immutable_descriptor = (property, {type}) => {
             throw new Error(`Expected ${value} to be a ${type}`);
           }
         }
-        set_immutably(privatized, value);
+        set_immutably(this, privatized, value);
       }
     }
   }
 };
 
 
-export default {merge, immutable_descriptor}
+export default {merge, immutable_descriptor_set}
