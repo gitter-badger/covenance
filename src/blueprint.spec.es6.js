@@ -1,3 +1,7 @@
-let name = "hilda";
+import test from 'tape'
 
-console.log("hello ${name}");
+
+test('should be sane', t => {
+  t.ok(true);
+  t.end();
+});

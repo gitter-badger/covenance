@@ -5,12 +5,6 @@ import rename from 'gulp-rename';
 
 let [SRC, DST] = ['src', 'dist'];
 
-gulp.task('test', () => {
-  //throw new Error("Write me!");
-  console.log('Testing');
-});
-
-
 gulp.task('build', () => {
   let clean = (path) => {
     path.basename = path.basename.replace('.es6', '');
@@ -24,4 +18,4 @@ gulp.task('build', () => {
 });
 
 
-gulp.task('default', gulp.series('build', 'test'));
+gulp.task('default', gulp.series('build'));
