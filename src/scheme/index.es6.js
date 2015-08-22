@@ -8,7 +8,6 @@ class Scheme {
   }
 }
 
-
 let descriptors = merge(
   immutable_typed_descriptor({property: 'attribute', type: 'string'}),
   immutable_typed_descriptor({property: 'predicate', type: 'function'}));
