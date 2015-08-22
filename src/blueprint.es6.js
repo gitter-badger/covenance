@@ -14,7 +14,7 @@ let blueprint =  mixin_a_lot.make_mixin({
     if (!Array.isArray(blueprints)) {
       throw new Error(`Expected property '${BLUEPRINT_PROPERTY}' to be an Array`)
     }
-    for (let scheme of BLUEPRINT_PROPERTY) {
+    for (let scheme of blueprints) {
       if (!(scheme instanceof Scheme)) {
         throw new Error(
           `Expected element ${scheme} of ${BLUEPRINT_PROPERTY} to be a Scheme`);
