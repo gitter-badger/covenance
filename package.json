@@ -25,5 +25,6 @@
   "homepage": "https://github.com/yangmillstheory/blueprint",
   "dependencies": {
     "mixin-a-lot": "^1.0.12"
-  }
+  },
+  "main": "blueprint.js"
 }
