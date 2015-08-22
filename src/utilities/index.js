@@ -9,11 +9,11 @@ let merge = (obj1, obj2) => {
 
 let immutable_descriptor_set = (property) => {
   let privatized = Symbol(property);
-  let dirty = false;
+  let UNINITIALIZED = undefined;
 
   return {
     [privatized]: {
-      value: null,
+      value: UNINITIALIZED,
       writable: true
     },
 
@@ -23,10 +23,11 @@ let immutable_descriptor_set = (property) => {
         return this[privatized];
       },
       set(value) {
-        if (dirty) {
+        if (this[privatized] !== UNINITIALIZED) {
           throw new Error(`${property} is immutable`)
+        } else if (value === UNINITIALIZED) {
+          throw new Error(`${property} should be undefined`)
         }
-        dirty = true;
         this[privatized] = value
       }
     }

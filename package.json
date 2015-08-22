@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/blueprint.js",
   "scripts": {
-    "test": "node test.es6.js src/**/*.spec.es6.js | node_modules/.bin/faucet"
+    "test": "node test.js src/**/*.spec.js | node_modules/.bin/faucet"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,6 @@
     "glob": "^5.0.14",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-babel": "^5.2.1",
-    "gulp-rename": "^1.2.2",
     "tape": "^4.2.0"
   },
   "homepage": "https://github.com/yangmillstheory/blueprint",

@@ -8,8 +8,8 @@ class Scheme {
   }
 }
 
-let attribute_descriptor = immutable_descriptor('attribute', {type: 'string'});
-let predicate_descriptor = immutable_descriptor('predicate', {type: 'string'});
+let attribute_descriptor = immutable_descriptor('attribute');
+let predicate_descriptor = immutable_descriptor('predicate');
 let descriptors = merge(attribute_descriptor, predicate_descriptor);
 
 Object.defineProperties(Scheme.prototype, descriptors);
