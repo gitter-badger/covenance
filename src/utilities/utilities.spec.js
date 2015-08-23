@@ -25,7 +25,7 @@ test('should not set the property to an undefined value', t => {
 
   t.throws(() => {
     obj[TEST_PROPERTY] = undefined
-  }, new RegExp(`${TEST_PROPERTY} should be defined`), Error);
+  }, new RegExp(`${TEST_PROPERTY} should be defined`));
   t.end()
 });
 
