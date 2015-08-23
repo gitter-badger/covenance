@@ -7,7 +7,7 @@ export default mixin_a_lot.make_mixin({
 
   name: BLUEPRINT_NAME,
 
-  premixing_hook() {
+  premix() {
     let blueprints = this[BLUEPRINT_NAME];
 
     if (!Array.isArray(blueprints)) {
@@ -21,7 +21,7 @@ export default mixin_a_lot.make_mixin({
     }
   },
 
-  validate_blueprint() {
+  check_blueprints() {
     for (let scheme of this[BLUEPRINT_NAME]) {
       let check = `${scheme.predicate}(${this[scheme.attribute]})`;
       if (!eval(check)) {
