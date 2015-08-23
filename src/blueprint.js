@@ -1,9 +1,9 @@
 import mixin_a_lot from 'mixin-a-lot';
-import {Scheme, is_Scheme} from '../scheme';
+import {Scheme, is_Scheme} from './scheme';
 
 
 const BLUEPRINT_NAME = 'blueprint';
-export default mixin_a_lot.make_mixin({
+const acts_as_blueprint = mixin_a_lot.make_mixin({
 
   name: BLUEPRINT_NAME,
 
@@ -21,14 +21,46 @@ export default mixin_a_lot.make_mixin({
     }
   },
 
-  check_blueprints() {
+  postmix() {
     for (let scheme of this[BLUEPRINT_NAME]) {
       if (!scheme.predicate(this[scheme.attribute])) {
         throw new Error(`Expected '${check}' to return true`);
       }
     }
   }
-
 });
+
+let enabled = false;
+
+export default {
+
+  enable() {
+    if (!enabled) {
+      enabled = true;
+      mixin_a_lot.enable_protomixing();
+      mixin_a_lot.enable_staticmixing();
+      Object.defineProperty(Function.prototype, 'blueprint_proto', {
+        enumerable: false,
+        value: (options) => {
+          this.proto_mix(acts_as_blueprint, options)
+        }
+      });
+      Object.defineProperty(Function.prototype, 'blueprint_static', {
+        enumerable: false,
+        value: (options) => {
+          this.static_mix(acts_as_blueprint, options)
+        }
+      });
+      return true
+    }
+    return false
+  },
+
+  Scheme
+
+}
+
+
+
 
 
