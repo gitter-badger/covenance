@@ -21,7 +21,7 @@ const acts_as_blueprint = mixin_a_lot.make_mixin({
     }
   },
 
-  postmix() {
+  check_blueprint() {
     for (let scheme of this[BLUEPRINT_NAME]) {
       if (!scheme.predicate(this[scheme.attribute])) {
         throw new Error(`Expected '${check}' to return true`);
