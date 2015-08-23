@@ -16,7 +16,7 @@ const acts_as_blueprint = mixin_a_lot.make_mixin({
     for (let scheme of blueprints) {
       if (!(is_Scheme(scheme))) {
         throw new TypeError(
-          `Expected element ${scheme} of '${BLUEPRINT_NAME}' to be a Scheme`);
+          `Expected element '${scheme}' of '${BLUEPRINT_NAME}' to be a Scheme`);
       }
     }
   },

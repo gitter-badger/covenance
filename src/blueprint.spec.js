@@ -4,15 +4,22 @@ import blueprint, {blueprinted, Scheme} from './blueprint'
 
 blueprint.enable();
 
-test('should throw when blueprinting without "blueprints" property', t => {
-  class Foo {}
-  t.ok(Foo instanceof Function, 'Foo is a function');
-  t.ok(Function.prototype.hasOwnProperty('proto_mix'), 'Function:: has proto_mix');
-  t.ok(Foo.proto_mix !== undefined, 'Foo has proto_mix');
+test('should throw when blueprinting without "blueprint" property', t => {
+  class Example {}
 
   t.throws(() => {
-    class Foo {}
-    Foo.blueprint_proto()
-  }, /Expected property 'blueprint' to be an Array/);
+    Example.blueprint_proto()
+  }, /^TypeError: Expected property 'blueprint' to be an Array$/);
+  t.end()
+});
+
+
+test('should throw when blueprinting with wrongly typed "blueprint"', t => {
+  class E {}
+  E.prototype.blueprint = ['example'];
+
+  t.throws(() => {
+    E.blueprint_proto()
+  }, /^TypeError: Expected element 'example' of 'blueprint' to be a Scheme$/);
   t.end()
 });
