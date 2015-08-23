@@ -1,12 +1,9 @@
 import test from 'tape'
 import {Scheme} from './index'
+import {is_type} from '../utilities'
 
 
-const is_type = (type) => {
-  return (thing) => {
-    return typeof thing === type
-  }
-};
+
 
 test('should throw when creating with wrong signature', t => {
   t.throws(() => {

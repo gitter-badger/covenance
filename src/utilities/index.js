@@ -1,4 +1,4 @@
-let merge = (obj1, obj2) => {
+const merge = (obj1, obj2) => {
   for (let key in obj2) {
     if (obj2.hasOwnProperty(key)) {
       obj1[key] = obj2[key]
@@ -7,7 +7,13 @@ let merge = (obj1, obj2) => {
   return obj1
 };
 
-let immutable_descriptor_set = property => {
+const is_type = (type) => {
+  return (thing) => {
+    return typeof thing === type
+  }
+};
+
+const immutable_descriptor_set = property => {
   let privatized = Symbol(property);
   let UNINITIALIZED = undefined;
 
@@ -35,4 +41,4 @@ let immutable_descriptor_set = property => {
 };
 
 
-export default {merge, immutable_descriptor_set}
+export default {merge, is_type, immutable_descriptor_set}
