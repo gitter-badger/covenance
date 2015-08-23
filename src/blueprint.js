@@ -39,16 +39,19 @@ export default {
       enabled = true;
       mixin_a_lot.enable_protomixing();
       mixin_a_lot.enable_staticmixing();
-      Object.defineProperty(Function.prototype, 'blueprint_proto', {
-        enumerable: false,
-        value: (options) => {
-          this.proto_mix(acts_as_blueprint, options)
-        }
-      });
-      Object.defineProperty(Function.prototype, 'blueprint_static', {
-        enumerable: false,
-        value: (options) => {
-          this.static_mix(acts_as_blueprint, options)
+
+      Object.defineProperties(Function.prototype, {
+        blueprint_proto: {
+          enumerable: false,
+          value: function(options) { // cannot use fat arrow here, 'this' will be wrong
+            this.proto_mix(acts_as_blueprint, options)
+          }
+        },
+        blueprint_static: {
+          enumerable: false,
+          value: function(options) {
+            this.static_mix(acts_as_blueprint, options)
+          }
         }
       });
       return true
