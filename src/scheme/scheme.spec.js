@@ -2,7 +2,7 @@ import test from 'tape'
 import {Scheme} from './index'
 
 
-let is_type = (type) => {
+const is_type = (type) => {
   return (thing) => {
     return typeof thing === type
   }

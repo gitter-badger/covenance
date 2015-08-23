@@ -2,8 +2,8 @@ import mixin_a_lot from 'mixin-a-lot';
 import {Scheme, is_Scheme} from '../scheme';
 
 
-let BLUEPRINT_NAME = 'blueprint';
-let acts_as_blueprint =  mixin_a_lot.make_mixin({
+const BLUEPRINT_NAME = 'blueprint';
+export default mixin_a_lot.make_mixin({
 
   name: BLUEPRINT_NAME,
 

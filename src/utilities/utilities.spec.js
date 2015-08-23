@@ -2,7 +2,7 @@ import test from 'tape'
 import {immutable_descriptor_set} from './index'
 
 
-let TEST_PROPERTY = 'test_property';
+const TEST_PROPERTY = 'test_property';
 
 test('should create the property', t => {
   let obj = Object.defineProperties(
