@@ -2,6 +2,12 @@ import test from 'tape'
 import {Scheme} from './index'
 
 
+let is_type = (type) => {
+  return (thing) => {
+    return typeof thing === type
+  }
+};
+
 test('should throw when creating with wrong types', t => {
   t.throws(() => {
     Scheme({attribute: 1, predicate: () => {}})
@@ -13,7 +19,7 @@ test('should throw when creating with wrong types', t => {
 });
 
 test('should read properties', t => {
-  let [attribute, predicate] = ['foo', is('string')];
+  let [attribute, predicate] = ['foo', is_type('string')];
   let scheme = Scheme({attribute, predicate});
 
   t.equals(scheme.attribute, attribute);
