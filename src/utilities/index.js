@@ -7,7 +7,7 @@ let merge = (obj1, obj2) => {
   return obj1
 };
 
-let immutable_descriptor_set = (property) => {
+let immutable_descriptor_set = property => {
   let privatized = Symbol(property);
   let UNINITIALIZED = undefined;
 
