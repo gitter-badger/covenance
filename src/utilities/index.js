@@ -26,7 +26,7 @@ let immutable_descriptor_set = (property) => {
         if (this[privatized] !== UNINITIALIZED) {
           throw new Error(`${property} is immutable`)
         } else if (value === UNINITIALIZED) {
-          throw new Error(`${property} should be undefined`)
+          throw new Error(`${property} should be defined`)
         }
         this[privatized] = value
       }
