@@ -24,7 +24,7 @@
     "glob": "^5.0.14",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-babel": "^5.2.1",
-    "mixin-a-lot": "^1.2.0",
+    "mixin-a-lot": "^1.2.1",
     "tape": "^4.2.0"
   },
   "homepage": "https://github.com/yangmillstheory/blueprint",
