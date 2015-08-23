@@ -23,8 +23,7 @@ export default mixin_a_lot.make_mixin({
 
   check_blueprints() {
     for (let scheme of this[BLUEPRINT_NAME]) {
-      let check = `${scheme.predicate}(${this[scheme.attribute]})`;
-      if (!eval(check)) {
+      if (!scheme.predicate(this[scheme.attribute])) {
         throw new Error(`Expected '${check}' to return true`);
       }
     }
