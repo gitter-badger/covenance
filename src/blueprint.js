@@ -11,12 +11,12 @@ const acts_as_blueprint = mixin_a_lot.make_mixin({
     let blueprints = this[BLUEPRINT_NAME];
 
     if (!Array.isArray(blueprints)) {
-      throw new Error(`Expected property '${BLUEPRINT_NAME}' to be an Array`)
+      throw new TypeError(`Expected property '${BLUEPRINT_NAME}' to be an Array`)
     }
     for (let scheme of blueprints) {
       if (!(is_Scheme(scheme))) {
-        throw new Error(
-          `Expected element ${scheme} of ${BLUEPRINT_NAME} to be a Scheme`);
+        throw new TypeError(
+          `Expected element ${scheme} of '${BLUEPRINT_NAME}' to be a Scheme`);
       }
     }
   },
