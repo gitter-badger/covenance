@@ -1,6 +1,7 @@
 import test from 'tape'
 import {immutable_descriptor_set} from './index'
 
+
 let TEST_PROPERTY = 'test_property';
 
 test('should create the property', t => {
@@ -22,8 +23,9 @@ test('should not set the property to an undefined value', t => {
   let obj = Object.defineProperties(
     {}, immutable_descriptor_set(TEST_PROPERTY));
 
-  t.throws(() => { obj[TEST_PROPERTY] = undefined },
-    new Error(`${TEST_PROPERTY} should be undefined`));
+  t.throws(() => {
+    obj[TEST_PROPERTY] = undefined
+  }, new RegExp(`${TEST_PROPERTY} should be defined`));
   t.end()
 });
 
@@ -36,14 +38,14 @@ test('should set the property to an defined value', t => {
   t.end()
 });
 
-test('should not set the property to a defined value twice', t => {
+test('should not set the property to different defined values twice', t => {
   let obj = Object.defineProperties({}, immutable_descriptor_set(TEST_PROPERTY));
 
   obj[TEST_PROPERTY] = null;
 
   t.throws(() => {
     obj[TEST_PROPERTY] = true
-  }, new Error(`${TEST_PROPERTY} is immutable`));
+  }, new RegExp(`${TEST_PROPERTY} is immutable`));
   t.end()
 });
 
@@ -54,6 +56,6 @@ test('should not set the property to the same defined value twice', t => {
 
   t.throws(() => {
     obj[TEST_PROPERTY] = null
-  }, new Error(`${TEST_PROPERTY} is immutable`));
+  }, new RegExp(`${TEST_PROPERTY} is immutable`));
   t.end()
 });
