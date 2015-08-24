@@ -66,19 +66,19 @@ test('should check proto blueprint', t => {
 });
 
 test('should check static blueprint', t => {
-  class A {}
-  A.blueprint = [
+  class Example {}
+  Example.blueprint = [
     Scheme({attribute: 'shortname', predicate: is_type('string')})
   ];
-  A.blueprint_static();
+  Example.blueprint_static();
 
   t.throws(() => {
-    A.shortname = true;
-    A.check_blueprint()
+    Example.shortname = true;
+    Example.check_blueprint()
   }, /^TypeError: 'shortname': 'true' failed blueprint check$/);
   t.throws(() => {
-    delete A.shortname;
-    A.check_blueprint()
+    delete Example.shortname;
+    Example.check_blueprint()
   }, /^TypeError: 'shortname': 'undefined' failed blueprint check$/);
   t.end()
 });
