@@ -30,7 +30,9 @@ test('should not set the property to an undefined value', t => {
 test('should set the property to an defined value', t => {
   let obj = frosty.freeze({}, TEST_PROPERTY);
 
-  t.doesNotThrow(() => { obj[TEST_PROPERTY] = true }, null);
+  t.doesNotThrow(() => {
+    obj[TEST_PROPERTY] = true
+  }, null);
   t.equals(obj[TEST_PROPERTY], true);
   t.end()
 });
@@ -54,5 +56,29 @@ test('should not set the property to the same defined value twice', t => {
   t.throws(() => {
     obj[TEST_PROPERTY] = null
   }, new RegExp(`${TEST_PROPERTY} is immutable`));
+  t.end()
+});
+
+test('should freeze multiple properties', t => {
+  let TEST_PROPERTIES = [TEST_PROPERTY, 'other_property'];
+
+  let obj = frosty.freeze({}, ...TEST_PROPERTIES);
+
+  // repeating the above test sequence
+  for (let test_property of TEST_PROPERTIES) {
+    t.equals(obj[test_property], undefined);
+    t.throws(() => {
+      obj[test_property] = undefined
+    }, new RegExp(`${test_property} should be defined`));
+    t.doesNotThrow(() => {
+      obj[test_property] = true
+    }, null);
+    t.throws(() => {
+      obj[test_property] = true
+    }, new RegExp(`${test_property} is immutable`));
+    t.throws(() => {
+      obj[test_property] = null
+    }, new RegExp(`${test_property} is immutable`));
+  }
   t.end()
 });
