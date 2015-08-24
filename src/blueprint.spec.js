@@ -2,8 +2,21 @@ import test from 'tape'
 import blueprint, {blueprinted, Scheme} from './blueprint'
 import {is_type} from './utilities'
 
+test('should enable blueprinting', t => {
+  t.notOk(Function.prototype.blueprint_proto);
+  t.notOk(Function.prototype.blueprint_static);
 
-blueprint.enable();
+  t.ok(blueprint.enable());
+
+  t.equals(typeof Function.prototype.blueprint_proto, 'function');
+  t.equals(typeof Function.prototype.blueprint_static, 'function');
+  t.end()
+});
+
+test('should enable blueprinting once', t => {
+  t.notOk(blueprint.enable());
+  t.end()
+});
 
 test('should throw when blueprinting without "blueprint" property', t => {
   class Example {}
