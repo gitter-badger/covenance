@@ -2,6 +2,7 @@ import test from 'tape'
 import blueprint, {blueprinted, Scheme} from './blueprint'
 import {is_type} from './utilities'
 
+
 test('should enable blueprinting', t => {
   t.notOk(Function.prototype.proto_blueprint);
   t.notOk(Function.prototype.static_blueprint);
