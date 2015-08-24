@@ -83,5 +83,14 @@ test('should check static blueprint', t => {
   t.end()
 });
 
-test.skip('should support before_blueprint and after_blueprint hooks', t => {
+test.skip('should support before_blueprint option', t => {
+});
+
+test.skip('should support before_check_hook option', t => {
+});
+
+test.skip('should support after_blueprint option', t => {
+});
+
+test.skip('should support after_check_hook option', t => {
 });
