@@ -1,4 +1,5 @@
-import {merge, immutable_descriptor_set} from './utilities'
+import {merge} from './utilities'
+import frosty from './frosty'
 
 
 class Scheme {
@@ -19,12 +20,7 @@ class Scheme {
   }
 }
 
-let attribute_descriptor = immutable_descriptor_set('attribute');
-let predicate_descriptor = immutable_descriptor_set('predicate');
-let descriptors = merge(attribute_descriptor, predicate_descriptor);
-
-Object.defineProperties(Scheme.prototype, descriptors);
-
+frosty.freeze(Scheme.prototype, 'attribute', 'predicate');
 
 export default {
   Scheme: Scheme.value_of.bind(Scheme),
