@@ -1,5 +1,5 @@
 import test from 'tape'
-import {immutable_descriptor_set} from './index'
+import {immutable_descriptor_set} from './utilities'
 
 
 const TEST_PROPERTY = 'test_property';

@@ -1,6 +1,6 @@
 import test from 'tape'
-import {Scheme} from './index'
-import {is_type} from '../utilities'
+import {Scheme} from './scheme'
+import {is_type} from './utilities'
 
 
 

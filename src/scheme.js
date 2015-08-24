@@ -1,4 +1,4 @@
-import {merge, immutable_descriptor_set} from '../utilities'
+import {merge, immutable_descriptor_set} from './utilities'
 
 
 class Scheme {
