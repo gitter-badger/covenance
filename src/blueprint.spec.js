@@ -55,8 +55,8 @@ test('should check proto blueprint', t => {
     }
   }
   Point.prototype.blueprint = [
-    Scheme({attribute: 'x', predicate: is_type('number')}),
-    Scheme({attribute: 'y', predicate: is_type('number')})
+    Scheme('x', is_type('number')),
+    Scheme('y', is_type('number'))
   ];
   Point.proto_blueprint();
 
@@ -69,7 +69,7 @@ test('should check proto blueprint', t => {
 test('should check static blueprint', t => {
   class Example {}
   Example.blueprint = [
-    Scheme({attribute: 'shortname', predicate: is_type('string')})
+    Scheme('shortname', is_type('string'))
   ];
   Example.static_blueprint();
 
@@ -93,7 +93,7 @@ test('should support a before_blueprint hook on static blueprint', t => {
     Example.static_blueprint({
       before_blueprint() {
         this.blueprint = [
-          Scheme({attribute: 'shortname', predicate: is_type('string')})
+          Scheme('shortname', is_type('string'))
         ];
       }
     });
@@ -110,7 +110,7 @@ test('should support a before_blueprint hook on proto blueprint', t => {
     Example.proto_blueprint({
       before_blueprint() {
         this.blueprint = [
-          Scheme({attribute: 'shortname', predicate: is_type('string')})
+          Scheme('shortname', is_type('string'))
         ];
       }
     });
@@ -124,7 +124,7 @@ test('should support "before blueprint check" hook on static blueprint', t => {
       this.shortname = 'example_name'
     }
   }
-  Example.blueprint = [Scheme({attribute: 'shortname', predicate: is_type('string')})];
+  Example.blueprint = [Scheme('shortname', is_type('string'))];
   Example.static_blueprint({before_blueprint_check: true});
 
   t.doesNotThrow(() => { Example.check_blueprint() });
@@ -139,7 +139,7 @@ test('should support "before blueprint check" hook on proto blueprint', t => {
     }
   }
   Example.prototype.blueprint = [
-    Scheme({attribute: 'shortname', predicate: is_type('string')})
+    Scheme('shortname', is_type('string'))
   ];
   Example.proto_blueprint({before_blueprint_check: true});
 
@@ -156,7 +156,7 @@ test('should support "after blueprint check" hook on static blueprint', t => {
       this.shortname = 'after_example_name'
     }
   }
-  Example.blueprint = [Scheme({attribute: 'shortname', predicate: is_type('string')})];
+  Example.blueprint = [Scheme('shortname', is_type('string'))];
   Example.static_blueprint({after_blueprint_check: true});
   Example.shortname = 'before_example_name';
 
@@ -171,7 +171,7 @@ test('should support "after blueprint check" hook on proto blueprint', t => {
       this.shortname = 'after_example_name'
     }
   }
-  Example.prototype.blueprint = [Scheme({attribute: 'shortname', predicate: is_type('string')})];
+  Example.prototype.blueprint = [Scheme('shortname', is_type('string'))];
   Example.proto_blueprint({after_blueprint_check: true});
   Example.prototype.shortname = 'before_example_name';
 
