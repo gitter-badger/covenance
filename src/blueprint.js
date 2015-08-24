@@ -45,13 +45,15 @@ export default {
         blueprint_proto: {
           enumerable: false,
           value: function(options) { // cannot use fat arrow here, 'this' will be wrong
-            this.proto_mix(acts_as_blueprint, options)
+            this.proto_mix(acts_as_blueprint, options);
+            return this
           }
         },
         blueprint_static: {
           enumerable: false,
           value: function(options) {
-            this.static_mix(acts_as_blueprint, options)
+            this.static_mix(acts_as_blueprint, options);
+            return this
           }
         }
       });
