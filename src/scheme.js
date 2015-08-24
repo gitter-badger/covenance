@@ -1,5 +1,5 @@
 import {merge} from './utilities'
-import frosty from './frosty'
+import frosty from 'frosty'
 
 
 class Scheme {
