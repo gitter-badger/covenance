@@ -149,8 +149,34 @@ test('should support "before blueprint check" hook on proto blueprint', t => {
   t.end()
 });
 
-test.skip('should support "after blueprint check" hook on static blueprint', t => {
+test('should support "after blueprint check" hook on static blueprint', t => {
+  class Example {
+    static after_check_blueprint() {
+      this.shortname = 'after_example_name'
+    }
+  }
+  Example.blueprint = [Scheme({attribute: 'shortname', predicate: is_type('string')})];
+  Example.static_blueprint({after_blueprint_check: true});
+  Example.shortname = 'before_example_name';
+
+  t.doesNotThrow(() => { Example.check_blueprint() });
+  t.equals(Example.shortname, 'after_example_name');
+  t.end()
 });
 
-test.skip('should support "after blueprint check" hook on proto blueprint', t => {
+test('should support "after blueprint check" hook on proto blueprint', t => {
+  class Example {
+    after_check_blueprint() {
+      this.shortname = 'after_example_name'
+    }
+  }
+  Example.prototype.blueprint = [Scheme({attribute: 'shortname', predicate: is_type('string')})];
+  Example.proto_blueprint({after_blueprint_check: true});
+  Example.prototype.shortname = 'before_example_name';
+
+  let e = new Example();
+
+  t.doesNotThrow(() => { e.check_blueprint() });
+  t.equals(e.shortname, 'after_example_name');
+  t.end()
 });
