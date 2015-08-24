@@ -32,7 +32,7 @@ const acts_as_blueprint = mixin_a_lot.make_mixin({
   }
 });
 
-let enabled = false;
+let ENABLED = false;
 
 // glue blueprint-specific options back to mixin-a-lot
 const extract_options = (options) => {
@@ -51,21 +51,21 @@ const extract_options = (options) => {
 
 export default {
   enable() {
-    if (!enabled) {
-      enabled = true;
+    if (!ENABLED) {
+      ENABLED = true;
 
       mixin_a_lot.enable_protomixing();
       mixin_a_lot.enable_staticmixing();
 
       Object.defineProperties(Function.prototype, {
-        blueprint_proto: {
+        proto_blueprint: {
           enumerable: false,
           // cannot use fat arrow here, 'this' will be wrong
           value: function(options = {}) {
             this.proto_mix(acts_as_blueprint, extract_options(options));
           }
         },
-        blueprint_static: {
+        static_blueprint: {
           enumerable: false,
           value: function(options = {}) {
             this.static_mix(acts_as_blueprint, extract_options(options));
