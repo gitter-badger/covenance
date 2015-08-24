@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/yangmillstheory/blueprint",
   "dependencies": {
-    "mixin-a-lot": "^1.0.12"
+    "mixin-a-lot": "^1.0.12",
+    "underscore": "^1.8.3"
   }
 }
