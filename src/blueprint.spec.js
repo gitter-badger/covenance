@@ -87,7 +87,8 @@ test('should support a before_blueprint hook on static blueprint', t => {
   class Example {}
 
   t.doesNotThrow(() => {
-    // won't complain about missing "blueprint" property, as in above tests
+    // won't complain about missing "blueprint" property, as above.
+    // this isn't a recommended use case for this hook.
     Example.static_blueprint({
       before_blueprint() {
         this.blueprint = [
@@ -99,11 +100,12 @@ test('should support a before_blueprint hook on static blueprint', t => {
   t.end()
 });
 
-test('should support a before_blueprint hook, on proto blueprint', t => {
+test('should support a before_blueprint hook on proto blueprint', t => {
   class Example {}
 
   t.doesNotThrow(() => {
-    // won't complain about missing "blueprint" property, as in above tests
+    // won't complain about missing "blueprint" property, as above.
+    // this isn't a recommended use case for this hook.
     Example.proto_blueprint({
       before_blueprint() {
         this.blueprint = [
@@ -115,14 +117,40 @@ test('should support a before_blueprint hook, on proto blueprint', t => {
   t.end()
 });
 
-test.skip('should support before_check_hook on static blueprint', t => {
+test('should support "before blueprint check" hook on static blueprint', t => {
+  class Example {
+    static before_check_blueprint() {
+      this.shortname = 'example_name'
+    }
+  }
+  Example.blueprint = [Scheme({attribute: 'shortname', predicate: is_type('string')})];
+  Example.static_blueprint({before_blueprint_check: true});
+
+  t.doesNotThrow(() => { Example.check_blueprint() });
+  t.equals(Example.shortname, 'example_name');
+  t.end()
 });
 
-test.skip('should support before_check_hook on proto blueprint', t => {
+test('should support "before blueprint check" hook on proto blueprint', t => {
+  class Example {
+    before_check_blueprint() {
+      this.shortname = 'example_name'
+    }
+  }
+  Example.prototype.blueprint = [
+    Scheme({attribute: 'shortname', predicate: is_type('string')})
+  ];
+  Example.proto_blueprint({before_blueprint_check: true});
+
+  let e = new Example();
+
+  t.doesNotThrow(() => { e.check_blueprint() });
+  t.equals(e.shortname, 'example_name');
+  t.end()
 });
 
-test.skip('should support after_check_hook on static blueprint', t => {
+test.skip('should support "after blueprint check" hook on static blueprint', t => {
 });
 
-test.skip('should support after_check_hook on proto blueprint', t => {
+test.skip('should support "after blueprint check" hook on proto blueprint', t => {
 });

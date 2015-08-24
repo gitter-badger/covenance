@@ -40,10 +40,10 @@ const extract_options = (options) => {
     premix: options.before_blueprint,
     postmix: options.after_blueprint
   });
-  if (options.attach_before_check) {
+  if (options.before_blueprint_check) {
     options.before_hook = ['check_blueprint']
   }
-  if (options.attach_after_check) {
+  if (options.after_blueprint_check) {
     options.after_hook = ['check_blueprint']
   }
   return options
