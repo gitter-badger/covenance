@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/blueprint.js",
   "scripts": {
-    "test": "node test.js ./**/*.spec.js ./**/**/*.spec.js | node_modules/.bin/faucet"
+    "test": "node test.js ./**/*.spec.js | node_modules/.bin/faucet"
   },
   "repository": {
     "type": "git",
