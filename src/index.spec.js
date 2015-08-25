@@ -4,18 +4,10 @@ import {is_type} from './utilities'
 
 
 test('should enable blueprinting', t => {
-  t.notOk(Function.prototype.proto_blueprint);
-  t.notOk(Function.prototype.static_blueprint);
-
-  t.ok(blueprint.enable());
+  blueprint.enable();
 
   t.equals(typeof Function.prototype.proto_blueprint, 'function');
   t.equals(typeof Function.prototype.static_blueprint, 'function');
-  t.end()
-});
-
-test('should enable blueprinting once', t => {
-  t.notOk(blueprint.enable());
   t.end()
 });
 
