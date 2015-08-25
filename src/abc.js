@@ -1,5 +1,5 @@
-import blueprint from './mixin'
-import {Blueprint} from './blueprint'
+import blueprint from './blueprint'
+import {is_type, inherit} from './utilities'
 
 
 let make_ABC = (blueprint) => {
@@ -7,26 +7,13 @@ let make_ABC = (blueprint) => {
 };
 
 class ABC {
-
   constructor() {
-    if (this.constructor === ABC) {
-      throw new Error('Cannot instantiate abstract class ABC')
-    }
+    throw new Error('Cannot instantiate abstract class ABC')
   }
 
-  extends_abstract(klass) {
-    if (typeof klass !== 'function') {
-      throw new Error(`Expected function got ${typeof klass}`)
-    }
+  static make() {
   }
 }
 
-blueprint.enable();
 
-ABC.blueprint = [Blueprint('blueprint', Array.isArray)];
-ABC.blueprint_static();
-
-
-class Abstract extends ABC {
-
-}
+export default ABC
