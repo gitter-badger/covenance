@@ -14,17 +14,20 @@ class ABC {
 
 
 export default {
-  make({proto}) {
+  make({name, proto}) {
     class A {
       constructor() {
         throw new Error("Can't instantiate abstract class")
+      }
+      static toString() {
+        return name
       }
     }
     if (typeof proto.props === 'object') {
       let props = proto.props;
       for (let prop in props) {
         if (props.hasOwnProperty(prop)) {
-          A.prototype[prop] = proto[prop]
+          A.prototype[prop] = props[prop]
         }
       }
     }
