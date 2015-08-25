@@ -10,10 +10,24 @@ class ABC {
   constructor() {
     throw new Error('Cannot instantiate abstract class ABC')
   }
-
-  static make() {
-  }
 }
 
 
-export default ABC
+export default {
+  make({proto}) {
+    class A {
+      constructor() {
+        throw new Error("Can't instantiate abstract class")
+      }
+    }
+    if (typeof proto.props === 'object') {
+      let props = proto.props;
+      for (let prop in props) {
+        if (props.hasOwnProperty(prop)) {
+          A.prototype[prop] = proto[prop]
+        }
+      }
+    }
+    return A;
+  }
+}
