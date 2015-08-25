@@ -1,5 +1,5 @@
 import test from 'tape'
-import {Blueprint} from './blueprint'
+import {Blueprint, Blueprints, is_Blueprint} from './blueprint'
 import {is_type} from './utilities'
 
 
@@ -13,7 +13,6 @@ test('should throw when creating with wrong signature', t => {
   t.end()
 });
 
-
 test('should not throw when creating with right signature', t => {
   t.doesNotThrow(() => {
     Blueprint({attribute: 'string', predicate: () => {}})
@@ -21,6 +20,42 @@ test('should not throw when creating with right signature', t => {
   t.doesNotThrow(() => {
     Blueprint('string', () => {})
   }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
+  t.end()
+});
+
+test('should create many Blueprints with positional tuple arguments', t => {
+  let blueprints = Blueprints(['blueprint1', () => {}], ['blueprint2', () => {}]);
+
+  t.ok(Array.isArray(blueprints));
+  for (let blueprint of blueprints) {
+    t.ok(is_Blueprint(blueprint))
+  }
+  t.end()
+});
+
+test('should create many Blueprints with positional object arguments', t => {
+  let blueprints = Blueprints(
+    {attribute: 'blueprint1', predicate: () => {}},
+    {attribute: 'blueprint2', predicate: () => {}}
+  );
+
+  t.ok(Array.isArray(blueprints));
+  for (let blueprint of blueprints) {
+    t.ok(is_Blueprint(blueprint))
+  }
+  t.end()
+});
+
+test('should create many Blueprints with mixed positional arguments', t => {
+  let blueprints = Blueprints(
+    ['blueprint1', () => {}],
+    {attribute: 'blueprint2', predicate: () => {}}
+  );
+
+  t.ok(Array.isArray(blueprints));
+  for (let blueprint of blueprints) {
+    t.ok(is_Blueprint(blueprint))
+  }
   t.end()
 });
 
