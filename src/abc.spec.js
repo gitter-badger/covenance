@@ -10,13 +10,13 @@ const make_polygon_ABC = () => {
     name: 'Polygon',
     proto: {
       blueprint: blueprint.Blueprints(
-        ['sides', is_type('number')],
+        ['color', is_type('string')],
         ['area', is_type('function')]
       ),
       props: {
-        sides: NaN,
+        color: null,
         area() {
-          return Number.NEGATIVE_INFINITY;
+          throw new Error('area() not implemented');
         }
       }
     }
@@ -42,15 +42,22 @@ test('should throw an error when instantiated directly', t => {
 test('should copy proto props to the base class', t => {
   let Polygon = make_polygon_ABC();
 
-  t.ok(isNaN(Polygon.prototype.sides));
-  t.equals(Polygon.prototype.area(), Number.NEGATIVE_INFINITY);
+  t.equals(Polygon.prototype.color, null);
+  t.throws(Polygon.prototype.area, /area\(\) not implemented$/);
   t.end()
 });
-//
-//test.skip('should throw an error when implementation has no blueprint', t => {
-//
-//});
-//
+
+test('should throw an error when implementation does not implement all props', t => {
+  let Polygon = make_polygon_ABC();
+  class Triangle {}
+  Triangle.prototype.color = 'blue';
+
+  t.throws(() => {
+    Polygon.register(Triangle)
+  }, /'area': 'undefined' failed blueprint check$/);
+  t.end()
+});
+
 //test.skip('should throw an error when implementation does not satisfy blueprint', t => {
 //
 //});
