@@ -6,10 +6,10 @@ import {is_type} from './utilities'
 test('should throw when creating with wrong signature', t => {
   t.throws(() => {
     Blueprint()
-  }, /Expected \{attribute: \[string], predicate: \[function]}/);
+  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.throws(() => {
     Blueprint(1, 2, 3)
-  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\./);
+  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.end()
 });
 
@@ -17,10 +17,10 @@ test('should throw when creating with wrong signature', t => {
 test('should not throw when creating with right signature', t => {
   t.doesNotThrow(() => {
     Blueprint({attribute: 'string', predicate: () => {}})
-  }, /Expected \{attribute: \[string], predicate: \[function]}/);
+  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.doesNotThrow(() => {
     Blueprint('string', () => {})
-  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\./);
+  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.end()
 });
 
