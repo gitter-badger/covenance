@@ -1,6 +1,10 @@
-import blueprint from './blueprint'
-import {Scheme} from './scheme'
+import blueprint from './mixin'
+import {Blueprint} from './blueprint'
 
+
+let make_ABC = (blueprint) => {
+
+};
 
 class ABC {
 
@@ -10,7 +14,7 @@ class ABC {
     }
   }
 
-  static register(klass) {
+  extends_abstract(klass) {
     if (typeof klass !== 'function') {
       throw new Error(`Expected function got ${typeof klass}`)
     }
@@ -19,7 +23,7 @@ class ABC {
 
 blueprint.enable();
 
-ABC.blueprint = [Scheme('blueprint', Array.isArray)];
+ABC.blueprint = [Blueprint('blueprint', Array.isArray)];
 ABC.blueprint_static();
 
 
