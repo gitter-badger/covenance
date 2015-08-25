@@ -44,8 +44,9 @@ let __construct__ = (...args) => {
 export default {
   Blueprint: __construct__,
 
+  // Returns immutable Array of Blueprints.
   Blueprints(...args) {
-    return args.map((arg) => {
+    return Object.freeze(args.map((arg) => {
       if (Array.isArray(arg)) {
         return __construct__(...arg);
       } else if (typeof arg === 'object') {
@@ -53,7 +54,7 @@ export default {
       } else {
         throw new Error(USAGE)
       }
-    });
+    }));
   },
 
   is_Blueprint(thing) {
