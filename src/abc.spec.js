@@ -50,9 +50,25 @@ test('should throw an error when implementation does not implement all props', t
   t.end()
 });
 
-//test.skip('should throw an error when implementation does not satisfy blueprint', t => {
-//
-//});
+test('should allow an implementation to invoke a base abstract method', t => {
+  let Polygon = make_polygon_ABC();
+  class Triangle {
+    constructor(base, height) {
+      this.base = base;
+      this.height = height;
+    }
+  }
+  Triangle.prototype.color = 'blue';
+  Triangle.prototype.area = function() {
+    return this.base * this.height * 0.5;
+  };
+  Polygon.register(Triangle);
+
+  let triangle = new Triangle(2, 2);
+
+  t.throws(triangle.area(), 2);
+  t.end()
+});
 //
 //test.skip('should expose abstract methods to implementations', t => {
 //
