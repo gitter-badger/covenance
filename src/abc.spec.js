@@ -42,29 +42,32 @@ test('should throw an error when instantiated directly', t => {
 test('should throw an error when implementation does not implement all props', t => {
   let Polygon = make_polygon_ABC();
   class Triangle {
-    constructor(color) {
-      this._color = color
-    }
-
     get color() {
-      return `${this._color} triangle`;
+      return `${super.color} triangle`;
     }
   }
 
   t.throws(() => {
     Polygon.register(Triangle)
   }, /'area': 'undefined' failed blueprint check$/);
+
+  class Square {
+    area() {
+      return 1
+    }
+  }
+
+  t.throws(() => {
+    Polygon.register(Square)
+  }, /'color': 'undefined' failed blueprint check$/);
   t.end()
 });
 
 test('should allow an implementation to invoke a base abstract method', t => {
   let Polygon = make_polygon_ABC();
   class Triangle {
-    set color(color) {
-      this._color = color
-    }
     get color() {
-      return `${this._color} triangle`
+      return `${super.color} triangle`
     }
 
     area() {
@@ -82,21 +85,15 @@ test('should allow an implementation to invoke a base abstract method', t => {
 test('should allow an implementation to invoke a base abstract property', t => {
   let Polygon = make_polygon_ABC();
   class Triangle {
-    set color(color) {
-      this._color = color
-    }
     get color() {
-      return `${super.color} + ${this._color}`
+      return `${super.color} + triangle`
     }
 
     area() {}
   }
   Polygon.register(Triangle);
 
-  let triangle = new Triangle(2, 2);
-  triangle.color = 'blue';
-
-  t.equals(triangle.color, 'black + blue');
+  t.equals(new Triangle().color, 'black + triangle');
   t.end()
 });
 
