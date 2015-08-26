@@ -16,7 +16,7 @@ const make_polygon_ABC = () => {
       props: {
         color: 'black',
         area() {
-          throw new Error('area() not implemented');
+          return 1000
         }
       }
     }
@@ -41,8 +41,15 @@ test('should throw an error when instantiated directly', t => {
 
 test('should throw an error when implementation does not implement all props', t => {
   let Polygon = make_polygon_ABC();
-  class Triangle {}
-  Triangle.prototype.color = 'blue';
+  class Triangle {
+    constructor(color) {
+      this._color = color
+    }
+
+    get color() {
+      return `${this._color} triangle`;
+    }
+  }
 
   t.throws(() => {
     Polygon.register(Triangle)
@@ -53,21 +60,48 @@ test('should throw an error when implementation does not implement all props', t
 test('should allow an implementation to invoke a base abstract method', t => {
   let Polygon = make_polygon_ABC();
   class Triangle {
-    constructor(base, height) {
-      this.base = base;
-      this.height = height;
+    set color(color) {
+      this._color = color
+    }
+    get color() {
+      return `${this._color} triangle`
+    }
+
+    area() {
+      return super.area() + 1
     }
   }
-  Triangle.prototype.color = 'blue';
-  Triangle.prototype.area = function() {
-    return this.base * this.height * 0.5;
-  };
+  Polygon.register(Triangle);
+
+  let triangle = new Triangle();
+
+  t.equals(triangle.area(), 1001);
+  t.end()
+});
+
+test('should allow an implementation to invoke a base abstract property', t => {
+  let Polygon = make_polygon_ABC();
+  class Triangle {
+    set color(color) {
+      this._color = color
+    }
+    get color() {
+      return `${super.color} + ${this._color}`
+    }
+
+    area() {}
+  }
   Polygon.register(Triangle);
 
   let triangle = new Triangle(2, 2);
+  triangle.color = 'blue';
 
-  t.throws(triangle.area(), 2);
+  t.equals(triangle.color, 'black + blue');
   t.end()
+});
+
+test.skip('should throw an error when implementation does not satisfy blueprint', t => {
+
 });
 //
 //test.skip('should expose abstract methods to implementations', t => {
