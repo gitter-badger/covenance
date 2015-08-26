@@ -1,7 +1,9 @@
 import blueprint from './blueprint'
+import {check_blueprint} from './mixin'
 import {enable as enable_blueprints} from './index'
 import {is_type, inherit} from './utilities'
 
+import _ from 'underscore'
 
 enable_blueprints();
 
@@ -14,37 +16,36 @@ export default {
       static toString() {
         return name
       }
-      static register(Impl) {
-        if (typeof Impl!== 'function') {
-          throw new Error('Expected function to register');
+      static register(klass, klassname) {
+        const USAGE = 'Expected (class, classname) to register';
+        if (typeof klass !== 'function') {
+          throw new Error(USAGE);
+        } else if (typeof  klassname !== 'string') {
+          throw new Error(USAGE);
         }
-        if (proto && proto.blueprint) {
-          Impl.prototype.blueprint = proto.blueprint;
-          Impl.proto_blueprint();
-          Impl.prototype.check_blueprint();
+        if (A.prototype.blueprint) {
+          check_blueprint(klass.prototype, A.prototype.blueprint)
         }
-        if (klass && klass.blueprint) {
-          Impl.blueprint = klass.blueprint;
-          Impl.static_blueprint();
-          Impl.check_blueprint();
+        if (A.blueprint) {
+          check_blueprint(klass, A.blueprint)
         }
-        inherit(Impl, A)
+        return A
       }
     }
-    if (proto && typeof proto.props === 'object') {
-      let props = proto.props;
-      for (let prop in props) {
-        if (props.hasOwnProperty(prop)) {
-          A.prototype[prop] = props[prop]
-        }
+    if (proto) {
+      if (proto.props) {
+        _.extend(A.prototype, proto.props)
+      }
+      if (proto.blueprint) {
+        A.prototype.blueprint = proto.blueprint
       }
     }
-    if (klass && typeof klass.props === 'object') {
-      let props = klass.props;
-      for (let prop in props) {
-        if (props.hasOwnProperty(prop)) {
-          A[prop] = props[prop]
-        }
+    if (klass) {
+      if (klass.props) {
+        _.extend(A, klass.props)
+      }
+      if (klass.blueprint) {
+        A.blueprint = klass.blueprint
       }
     }
     return A;
