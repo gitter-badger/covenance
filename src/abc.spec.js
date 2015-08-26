@@ -14,7 +14,7 @@ const make_polygon_ABC = () => {
         ['area', is_type('function')]
       ),
       props: {
-        color: null,
+        color: 'black',
         area() {
           throw new Error('area() not implemented');
         }
