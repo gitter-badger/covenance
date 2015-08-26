@@ -39,14 +39,6 @@ test('should throw an error when instantiated directly', t => {
   t.end()
 });
 
-test('should copy proto props to the base class', t => {
-  let Polygon = make_polygon_ABC();
-
-  t.equals(Polygon.prototype.color, null);
-  t.throws(Polygon.prototype.area, /area\(\) not implemented$/);
-  t.end()
-});
-
 test('should throw an error when implementation does not implement all props', t => {
   let Polygon = make_polygon_ABC();
   class Triangle {}
