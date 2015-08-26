@@ -6,7 +6,7 @@ import {is_type, inherit} from './utilities'
 enable_blueprints();
 
 export default {
-  make({name, proto, cls}) {
+  make({name, proto, klass}) {
     class A {
       constructor() {
         throw new Error("Can't instantiate abstract class")
@@ -18,16 +18,17 @@ export default {
         if (typeof Impl!== 'function') {
           throw new Error('Expected function to register');
         }
-        if (proto.blueprint) {
+        if (proto && proto.blueprint) {
           Impl.prototype.blueprint = proto.blueprint;
           Impl.proto_blueprint();
           Impl.prototype.check_blueprint();
         }
-        if (cls.blueprint) {
-          Impl.blueprint = cls.blueprint;
+        if (klass && klass.blueprint) {
+          Impl.blueprint = klass.blueprint;
           Impl.static_blueprint();
           Impl.check_blueprint();
         }
+        inherit(Impl, A)
       }
     }
     if (proto && typeof proto.props === 'object') {
@@ -38,8 +39,8 @@ export default {
         }
       }
     }
-    if (cls && typeof cls.props === 'object') {
-      let props = cls.props;
+    if (klass && typeof klass.props === 'object') {
+      let props = klass.props;
       for (let prop in props) {
         if (props.hasOwnProperty(prop)) {
           A[prop] = props[prop]
