@@ -2,15 +2,6 @@ import mixin_a_lot from 'mixin-a-lot';
 import {Blueprint, is_Blueprint} from './blueprint';
 
 
-let check_blueprint = (context, blueprint) => {
-  for (let scheme of blueprint) {
-    if (!scheme.predicate(context[scheme.attribute])) {
-      throw new TypeError(
-        `'${scheme.attribute}': '${context[scheme.attribute]}' failed blueprint check`);
-    }
-  }
-};
-
 const BLUEPRINT_KEY = 'blueprint';
 const acts_as_blueprint = mixin_a_lot.make_mixin({
 
@@ -30,10 +21,15 @@ const acts_as_blueprint = mixin_a_lot.make_mixin({
     }
   },
 
-  check_blueprint() {
-    check_blueprint(this, this[BLUEPRINT_KEY])
+  check_blueprint(context = this) {
+    for (let scheme of this[BLUEPRINT_KEY]) {
+      if (!scheme.predicate(context[scheme.attribute])) {
+        throw new TypeError(
+          `'${scheme.attribute}': '${context[scheme.attribute]}' failed blueprint check`);
+      }
+    }
   }
 
 });
 
-export default {acts_as_blueprint, check_blueprint}
+export default {acts_as_blueprint}
