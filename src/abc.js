@@ -21,7 +21,7 @@ export default {
 
       static register(impl) {
         if (typeof impl !== 'function') {
-          throw new Error(`Abstract class ${name} only register functions`)
+          throw new Error(`Abstract class ${name} can only register functions`)
         }
         if (A.prototype[BLUEPRINTS_KEY]) {
           blueprint_check({
