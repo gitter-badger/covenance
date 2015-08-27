@@ -19,7 +19,10 @@ export default {
         return name
       }
 
-      static implemented_by(impl) {
+      static register(impl) {
+        if (typeof impl !== 'function') {
+          throw new Error(`Abstract class ${name} only register functions`)
+        }
         if (A.prototype[BLUEPRINTS_KEY]) {
           blueprint_check({
             target: impl.prototype,
@@ -29,7 +32,7 @@ export default {
         if (A[BLUEPRINTS_KEY]) {
           blueprint_check({target: impl, blueprints: A[BLUEPRINTS_KEY]})
         }
-        return A
+        return impl
       }
     }
     if (proto) {
