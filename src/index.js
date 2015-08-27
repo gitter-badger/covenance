@@ -1,5 +1,5 @@
 import mixin_a_lot from 'mixin-a-lot';
-import {Blueprint} from './blueprint';
+import {Blueprint, Blueprints} from './blueprint';
 import {acts_as_blueprinted, BLUEPRINTS_KEY} from './mixin'
 import _ from 'underscore'
 
@@ -50,7 +50,9 @@ export default {
     return false
   },
 
-  Blueprint
+  Blueprint,
+
+  Blueprints
 }
 
 

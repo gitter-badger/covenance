@@ -1,5 +1,5 @@
 import test from 'tape'
-import blueprint, {Blueprint} from './index'
+import blueprint, {Blueprints, Blueprint} from './index'
 import {is_type} from './utilities'
 
 
@@ -49,10 +49,7 @@ test('should check proto blueprint', t => {
     }
 
     get blueprints() {
-      return [
-        Blueprint('x', is_type('number')),
-        Blueprint('y', is_type('number'))
-      ]
+      return Blueprints(['x', is_type('number')], ['y', is_type('number')])
     }
   }
   Point.blueprint();
@@ -85,7 +82,7 @@ test('should check static blueprint', t => {
 test('should support a before_blueprint hook on static blueprints', t => {
   class Foo {
     static get blueprints() {
-      return [Blueprint('foo', is_type('string'))];
+      return [Blueprint('foo', is_type('string'))]
     }
   }
 
@@ -147,12 +144,12 @@ test('should support "before blueprint check" hook on proto blueprints', t => {
   }
   Foo.blueprint({before_blueprint_check: true});
 
-  let e = new Foo();
+  let foo = new Foo();
 
   t.doesNotThrow(() => {
-    e.blueprint_check()
+    foo.blueprint_check()
   });
-  t.equals(e.foo, 'name');
+  t.equals(foo.foo, 'name');
   t.end()
 });
 
@@ -200,10 +197,76 @@ test('should support "after blueprint check" hook on proto blueprints', t => {
   }
   Foo.blueprint({after_blueprint_check: true});
 
-  let e = new Foo();
-  e.foo = 'before_foo';
-  e.blueprint_check();
+  let f = new Foo();
+  f.foo = 'before_foo';
+  f.blueprint_check();
 
-  t.equals(e.foo, 'after_foo');
+  t.equals(f.foo, 'after_foo');
+  t.end()
+});
+
+
+test('should work with a mix of proto and static blueprints', t => {
+  class Foo {
+    get blueprints() {
+      return Blueprints(
+        ['proto_foo1', is_type('string')],
+        ['proto_foo2', is_type('number')]
+      )
+    }
+
+    static get blueprints() {
+      return Blueprints(
+        ['static_foo1', is_type('string')],
+        ['static_foo2', is_type('number')]
+      )
+    }
+
+    after_blueprint_check() {
+      this.proto_foo1 = 'you win!'
+    }
+
+    static after_blueprint_check() {
+      this.static_foo1 = 'you win!'
+    }
+  }
+
+  let f = new Foo();
+
+  Foo.blueprint({after_blueprint_check: true});
+
+  t.throws(() => {
+    Foo.static_foo1 = 'string';
+    Foo.static_foo2 = 'string';
+
+    f.proto_foo1 = 'string';
+    f.proto_foo2 = 1;
+
+    Foo.blueprint_check()
+  }, /^TypeError: 'static_foo2': 'string' failed blueprint check$/);
+
+  t.throws(() => {
+    Foo.static_foo1 = 'string';
+    Foo.static_foo2 = 1;
+
+    f.proto_foo1 = [];
+    f.proto_foo2 = 1;
+
+    f.blueprint_check()
+  }, /^TypeError: 'proto_foo1': .+ failed blueprint check$/);
+
+  Foo.static_foo1 = 'string';
+  Foo.static_foo2 = 2;
+
+  f.proto_foo1 = 'string';
+  f.proto_foo2 = 1;
+
+  t.doesNotThrow(() => {
+    f.blueprint_check();
+    Foo.blueprint_check();
+  });
+
+  t.equals(f.proto_foo1, 'you win!');
+  t.equals(Foo.static_foo1, 'you win!');
   t.end()
 });
