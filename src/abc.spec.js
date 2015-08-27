@@ -78,25 +78,34 @@ test('should throw an error when implementation does not implement all props', t
   }, /'static1': 'undefined' failed blueprint check$/);
   t.end()
 });
-//
-//test('should allow an implementation to invoke a base abstract method', t => {
-//  let ABC = make_ABC();
-//  class Triangle {
-//    get color() {
-//      return `${super.color} triangle`
-//    }
-//
-//    area() {
-//      return super.area() + 1
-//    }
-//  }
-//  ABC.implemented_by(Triangle);
-//
-//  let triangle = new Triangle();
-//
-//  t.equals(triangle.area(), 1001);
-//  t.end()
-//});
+
+test('should allow an implementation to invoke a base abstract method', t => {
+  let ABC = make_ABC();
+  class I extends ABC {
+    get proto1() {
+      return 'I_proto1'
+    }
+    proto2() {
+      return super.proto2()
+    }
+    static get static1() {
+      return super.static1 + 1000
+    }
+    static static2() {
+      return 'I_static2'
+    }
+  }
+
+  t.doesNotThrow(() => {
+    ABC.implemented_by(I);
+  });
+
+  let i = new I();
+
+  t.equals(i.proto2(), 'proto2');
+  t.equals(I.static1, 1001);
+  t.end()
+});
 //
 //test.skip('should allow an implementation to invoke a base abstract property', t => {
 //  let ABC = make_ABC();
