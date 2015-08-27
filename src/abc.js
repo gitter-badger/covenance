@@ -1,5 +1,5 @@
 import blueprint from './blueprint'
-import {check_blueprint} from './mixin'
+import {blueprint_check, BLUEPRINTS_KEY} from './mixin'
 import {enable as enable_blueprints} from './index'
 import {is_type, inherit} from './utilities'
 import _ from 'underscore'
@@ -17,26 +17,29 @@ export default {
         return name
       }
 
-      static implemented_by(klass) {
-        if (A.prototype.blueprints) {
-          check_blueprint(klass.prototype, A.prototype.blueprints)
+      static implemented_by(impl) {
+        if (A.prototype[BLUEPRINTS_KEY]) {
+          blueprint_check({
+            target: impl.prototype,
+            blueprints: A.prototype[BLUEPRINTS_KEY]
+          })
         }
-        if (A.blueprints) {
-          check_blueprint(klass, A.blueprints)
+        if (A[BLUEPRINTS_KEY]) {
+          blueprint_check({target: impl, blueprints: A[BLUEPRINTS_KEY]})
         }
         return A
       }
     }
     if (proto) {
       _.extend(A.prototype, proto.props);
-      if (proto.blueprints) {
-        A.prototype.blueprints = proto.blueprints;
+      if (proto[BLUEPRINTS_KEY]) {
+        A.prototype[BLUEPRINTS_KEY] = proto[BLUEPRINTS_KEY];
       }
     }
     if (klass) {
       _.extend(A, klass.props);
-      if (klass.blueprints) {
-        A.blueprints = klass.blueprints;
+      if (klass[BLUEPRINTS_KEY]) {
+        A[BLUEPRINTS_KEY] = klass[BLUEPRINTS_KEY];
       }
     }
     return A;
