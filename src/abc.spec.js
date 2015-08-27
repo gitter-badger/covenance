@@ -102,25 +102,17 @@ test('should allow an implementation to invoke a base abstract method', t => {
 
   let i = new I();
 
+  // Test calling up to the base class
   t.equals(i.proto2(), 'proto2');
   t.equals(I.static1, 1001);
+
+  // Test own properties
+  t.equals(i.proto1, 'I_proto1');
+  t.equals(I.static2(), 'I_static2');
+
   t.end()
 });
-//
-//test.skip('should allow an implementation to invoke a base abstract property', t => {
-//  let ABC = make_ABC();
-//  class Triangle {
-//    get color() {
-//      return `${super.color} + triangle`
-//    }
-//
-//    area() {}
-//  }
-//  ABC.implemented_by(Triangle);
-//
-//  t.equals(new Triangle().color, 'black + triangle');
-//  t.end()
-//});
+
 
 //test.skip('should throw an error when implementation does not satisfy blueprint', t => {
 //
