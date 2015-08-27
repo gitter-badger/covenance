@@ -10,7 +10,9 @@ export default {
   make({name, proto, klass}) {
     class A {
       constructor() {
-        throw new Error("Can't instantiate abstract class")
+        if (this.constructor === A) {
+          throw new Error("Can't instantiate abstract class")
+        }
       }
 
       static toString() {
