@@ -12,10 +12,10 @@ const extract_options = (options) => {
     premix: options.before_blueprint,
     postmix: options.after_blueprint
   });
-  if (options.before_blueprint_check) {
+  if (options.before_check_blueprint) {
     options.before_hook = ['check_blueprint']
   }
-  if (options.after_blueprint_check) {
+  if (options.after_check_blueprint) {
     options.after_hook = ['check_blueprint']
   }
   return options
@@ -30,14 +30,14 @@ export default {
       mixin_a_lot.enable_staticmixing();
 
       Object.defineProperties(Function.prototype, {
-        proto_blueprint: {
+        blueprint_proto: {
           enumerable: false,
           // cannot use fat arrow here, 'this' will be wrong
           value: function(options = {}) {
             this.proto_mix(acts_as_blueprint, extract_options(options));
           }
         },
-        static_blueprint: {
+        blueprint_static: {
           enumerable: false,
           value: function(options = {}) {
             this.static_mix(acts_as_blueprint, extract_options(options));
