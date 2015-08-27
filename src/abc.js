@@ -7,7 +7,7 @@ import _ from 'underscore'
 enable_blueprints();
 
 export default {
-  make({name, proto, klass}) {
+  ABC({name, proto, klass}) {
     class A {
       constructor() {
         if (this.constructor === A) {

@@ -1,12 +1,12 @@
 import test from 'tape'
 import {is_type} from './utilities'
 
-import ABC from './abc'
+import {ABC} from './abc'
 import blueprint from './blueprint'
 
 
 const make_ABC = () => {
-  return ABC.make({
+  return ABC({
     name: 'ABC',
     proto: {
       blueprints: blueprint.Blueprints(
