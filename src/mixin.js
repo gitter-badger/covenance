@@ -15,7 +15,7 @@ const acts_as_blueprinted = mixin_a_lot.make_mixin({
 
   name: 'blueprinted',
 
-  // Anything that acts as a blueprint must have a blueprint property.
+  // Anything that acts as a blueprint must have a blueprints property.
   premix() {
     let blueprints = this[BLUEPRINTS_KEY];
 
@@ -31,7 +31,8 @@ const acts_as_blueprinted = mixin_a_lot.make_mixin({
   },
 
   blueprint_check() {
-    blueprint_check({target: this, blueprints: this[BLUEPRINTS_KEY]})
+    blueprint_check({target: this, blueprints: this[BLUEPRINTS_KEY]});
+    return this
   }
 
 });

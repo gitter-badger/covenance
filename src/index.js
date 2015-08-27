@@ -1,22 +1,23 @@
 import mixin_a_lot from 'mixin-a-lot';
 import {Blueprint, Blueprints} from './blueprint';
 import {acts_as_blueprinted, BLUEPRINTS_KEY} from './mixin'
-import _ from 'underscore'
+import {merge, is_type} from './utilities'
 
 
 let ENABLED = false;
+let is_function = is_type('function');
 
 // glue blueprint-specific options back to mixin-a-lot
 const clean_options = (options) => {
-  options = _.extend(options, {
+  options = merge(options, {
     premix: options.before_blueprint,
     postmix: options.after_blueprint
   });
-  if (options.before_blueprint_check) {
-    options.before_hook = ['blueprint_check']
+  if (is_function(options.before_blueprint_check)) {
+    options.before_hook = {blueprint_check: options.before_blueprint_check}
   }
-  if (options.after_blueprint_check) {
-    options.after_hook = ['blueprint_check']
+  if (is_function(options.after_blueprint_check)) {
+    options.after_hook = {blueprint_check: options.after_blueprint_check}
   }
   return options
 };

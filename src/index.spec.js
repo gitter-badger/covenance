@@ -118,12 +118,12 @@ test('should support "before blueprint check" hook on static blueprints', t => {
     static get blueprints() {
       return [Blueprint('foo', is_type('string'))]
     }
-
-    static before_blueprint_check() {
+  }
+  Foo.blueprint({
+    before_blueprint_check() {
       this.foo = 'name'
     }
-  }
-  Foo.blueprint({before_blueprint_check: true});
+  });
 
   t.doesNotThrow(() => {
     Foo.blueprint_check()
@@ -137,12 +137,15 @@ test('should support "before blueprint check" hook on proto blueprints', t => {
     get blueprints() {
       return [Blueprint('foo', is_type('string'))];
     }
-
+  }
+  Foo.blueprint({
     before_blueprint_check() {
+      // 'this' is the prototype; see:
+      //
+      //    https://github.com/yangmillstheory/mixin.a.lot#-mix-options--mixin-method-hooks
       this.foo = 'name'
     }
-  }
-  Foo.blueprint({before_blueprint_check: true});
+  });
 
   let foo = new Foo();
 
@@ -155,22 +158,15 @@ test('should support "before blueprint check" hook on proto blueprints', t => {
 
 test('should support "after blueprint check" hook on static blueprints', t => {
   class Foo {
-    static after_blueprint_check() {
-      this.foo = 'after_foo'
-    }
-
-    static get foo() {
-      return this.__foo__
-    }
-    static set foo(foo) {
-      this.__foo__ = foo
-    }
-
     static get blueprints() {
       return [Blueprint('foo', is_type('string'))];
     }
   }
-  Foo.blueprint({after_blueprint_check: true});
+  Foo.blueprint({
+    after_blueprint_check() {
+      this.foo = 'after_foo'
+    }
+  });
   Foo.foo = 'before_foo';
   Foo.blueprint_check();
 
@@ -180,25 +176,20 @@ test('should support "after blueprint check" hook on static blueprints', t => {
 
 test('should support "after blueprint check" hook on proto blueprints', t => {
   class Foo {
-    after_blueprint_check() {
-      this.foo = 'after_foo'
-    }
-
     get blueprints() {
       return [Blueprint('foo', is_type('string'))];
     }
-
-    get foo() {
-      return this.__foo__
-    }
-    set foo(foo) {
-      this.__foo__ = foo
-    }
   }
-  Foo.blueprint({after_blueprint_check: true});
+  Foo.blueprint({
+    after_blueprint_check(instance) {
+      // You can use the instance, or 'this', which is Foo.prototype.
+      instance.foo = 'after_foo'
+    }
+  });
 
   let f = new Foo();
-  f.foo = 'before_foo';
+  f.foo ='before_foo';
+
   f.blueprint_check();
 
   t.equals(f.foo, 'after_foo');
@@ -221,19 +212,19 @@ test('should work with a mix of proto and static blueprints', t => {
         ['static_foo2', is_type('number')]
       )
     }
-
-    after_blueprint_check() {
-      this.proto_foo1 = 'you win!'
-    }
-
-    static after_blueprint_check() {
-      this.static_foo1 = 'you win!'
-    }
   }
 
   let f = new Foo();
 
-  Foo.blueprint({after_blueprint_check: true});
+  Foo.blueprint({
+    after_blueprint_check(instance) {
+      if (instance === Foo) {
+        this.static_foo1 = 'you win!'
+      } else {
+        instance.proto_foo1 = 'you win!'
+      }
+    }
+  });
 
   t.throws(() => {
     Foo.static_foo1 = 'string';
