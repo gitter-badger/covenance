@@ -1,22 +1,22 @@
 import mixin_a_lot from 'mixin-a-lot';
 import {Blueprint} from './blueprint';
-import {acts_as_blueprint} from './mixin'
+import {acts_as_blueprinted, BLUEPRINTS_KEY} from './mixin'
 import _ from 'underscore'
 
 
 let ENABLED = false;
 
 // glue blueprint-specific options back to mixin-a-lot
-const extract_options = (options) => {
+const clean_options = (options) => {
   options = _.extend(options, {
     premix: options.before_blueprint,
     postmix: options.after_blueprint
   });
-  if (options.before_check_blueprint) {
-    options.before_hook = ['check_blueprint']
+  if (options.before_blueprint_check) {
+    options.before_hook = ['blueprint_check']
   }
-  if (options.after_check_blueprint) {
-    options.after_hook = ['check_blueprint']
+  if (options.after_blueprint_check) {
+    options.after_hook = ['blueprint_check']
   }
   return options
 };
@@ -30,17 +30,18 @@ export default {
       mixin_a_lot.enable_staticmixing();
 
       Object.defineProperties(Function.prototype, {
-        blueprint_proto: {
-          enumerable: false,
-          // cannot use fat arrow here, 'this' will be wrong
+        blueprint: {
+          enumerable: true,
           value: function(options = {}) {
-            this.proto_mix(acts_as_blueprint, extract_options(options));
-          }
-        },
-        blueprint_static: {
-          enumerable: false,
-          value: function(options = {}) {
-            this.static_mix(acts_as_blueprint, extract_options(options));
+            if (this.prototype[BLUEPRINTS_KEY]) {
+              this.proto_mix(acts_as_blueprinted, clean_options(options));
+            }
+            if (this[BLUEPRINTS_KEY]) {
+              this.static_mix(acts_as_blueprinted, clean_options(options));
+            }
+            if (!this.prototype[BLUEPRINTS_KEY] && !this[BLUEPRINTS_KEY]) {
+              throw new Error('Found no static or prototype blueprints.')
+            }
           }
         }
       });

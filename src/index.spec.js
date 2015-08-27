@@ -6,40 +6,37 @@ import {is_type} from './utilities'
 test('should enable blueprinting', t => {
   blueprint.enable();
 
-  t.equals(typeof Function.prototype.blueprint_proto, 'function');
-  t.equals(typeof Function.prototype.blueprint_static, 'function');
+  t.equals(typeof Function.prototype.blueprint, 'function');
   t.end()
 });
 
 test('should throw when blueprinting without "blueprint" property', t => {
-  class Example {}
+  class Foo {}
 
   t.throws(() => {
-    Example.blueprint_proto()
-  }, /^TypeError: Expected property 'blueprint' to be an Array$/);
-  t.throws(() => {
-    Example.blueprint_static()
-  }, /^TypeError: Expected property 'blueprint' to be an Array$/);
+    Foo.blueprint()
+  }, /Found no static or prototype blueprints.$/);
   t.end()
 });
 
 test('should throw when blueprinting with wrongly typed "blueprint"', t => {
-  class E {
-    get blueprint() {
-      return ['blueprint_proto'];
-    }
-
-    static get blueprint() {
-      return ['blueprint_static'];
-    }
-  }
 
   t.throws(() => {
-    E.blueprint_proto()
-  }, /^TypeError: Expected element 'blueprint_proto' of 'blueprint' to be a Blueprint$/);
+    class E {
+      get blueprints() {
+        return [{}];
+      }
+    }
+    E.blueprint()
+  }, /^TypeError: Expected element '\[object Object]' of 'blueprints' to be a Blueprint$/);
   t.throws(() => {
-    E.blueprint_static()
-  }, /^TypeError: Expected element 'blueprint_static' of 'blueprint' to be a Blueprint$/);
+    class E {
+      static get blueprints() {
+        return [1];
+      }
+    }
+    E.blueprint()
+  }, /^TypeError: Expected element '1' of 'blueprints' to be a Blueprint$/);
   t.end()
 });
 
@@ -48,17 +45,17 @@ test('should check proto blueprint', t => {
     constructor(x, y) {
       this.x = x;
       this.y = y;
-      this.check_blueprint()
+      this.blueprint_check()
     }
 
-    get blueprint() {
+    get blueprints() {
       return [
         Blueprint('x', is_type('number')),
         Blueprint('y', is_type('number'))
       ]
     }
   }
-  Point.blueprint_proto();
+  Point.blueprint();
 
   t.throws(() => {
     new Point(1, 'string')
@@ -67,140 +64,146 @@ test('should check proto blueprint', t => {
 });
 
 test('should check static blueprint', t => {
-  class Example {
-    static get blueprint() {
-      return [Blueprint('shortname', is_type('string'))]
+  class Foo {
+    static get blueprints() {
+      return [Blueprint('foo', is_type('string'))]
     }
   }
-  Example.blueprint_static();
+  Foo.blueprint();
 
   t.throws(() => {
-    Example.shortname = true;
-    Example.check_blueprint()
-  }, /^TypeError: 'shortname': 'true' failed blueprint check$/);
+    Foo.foo = true;
+    Foo.blueprint_check()
+  }, /^TypeError: 'foo': 'true' failed blueprint check$/);
   t.throws(() => {
-    delete Example.shortname;
-    Example.check_blueprint()
-  }, /^TypeError: 'shortname': 'undefined' failed blueprint check$/);
+    delete Foo.foo;
+    Foo.blueprint_check()
+  }, /^TypeError: 'foo': 'undefined' failed blueprint check$/);
   t.end()
 });
 
-test('should support a before_blueprint hook on static blueprint', t => {
-  class Example {}
+test('should support a before_blueprint hook on static blueprints', t => {
+  class Foo {
+    static get blueprints() {
+      return [Blueprint('foo', is_type('string'))];
+    }
+  }
 
-  t.doesNotThrow(() => {
-    // won't complain about missing "blueprint" property, as above.
-    // this isn't a recommended use case for this hook.
-    Example.blueprint_static({
+  t.throws(() => {
+    Foo.blueprint({
       before_blueprint() {
-        this.blueprint = [Blueprint('shortname', is_type('string'))];
+        delete this.blueprints
       }
     });
-  });
+  }, /Expected property 'blueprints' to be an Array$/);
   t.end()
 });
 
-test('should support a before_blueprint hook on proto blueprint', t => {
-  class Example {}
+test('should support a before_blueprint hook on proto blueprints', t => {
+  class Foo {
+    get blueprints() {
+      return [Blueprint('foo', is_type('string'))]
+    }
+  }
 
-  t.doesNotThrow(() => {
-    // won't complain about missing "blueprint" property, as above.
-    // this isn't a recommended use case for this hook.
-    Example.blueprint_proto({
+  t.throws(() => {
+    Foo.blueprint({
       before_blueprint() {
-        this.blueprint = [Blueprint('shortname', is_type('string'))];
+        delete this.blueprints
       }
-    });
-  });
+    })
+  }, /Expected property 'blueprints' to be an Array$/);
   t.end()
 });
 
-test('should support "before blueprint check" hook on static blueprint', t => {
-  class Example {
-    static get blueprint() {
-      return [Blueprint('shortname', is_type('string'))]
+test('should support "before blueprint check" hook on static blueprints', t => {
+  class Foo {
+    static get blueprints() {
+      return [Blueprint('foo', is_type('string'))]
     }
 
-    static before_check_blueprint() {
-      this.shortname = 'name'
-    }
-  }
-  Example.blueprint_static({before_check_blueprint: true});
-
-  t.doesNotThrow(() => { Example.check_blueprint() });
-  t.equals(Example.shortname, 'name');
-  t.end()
-});
-
-test('should support "before blueprint check" hook on proto blueprint', t => {
-  class Example {
-    get blueprint() {
-      return [Blueprint('shortname', is_type('string'))];
-    }
-
-    before_check_blueprint() {
-      this.shortname = 'name'
+    static before_blueprint_check() {
+      this.foo = 'name'
     }
   }
-  Example.blueprint_proto({before_check_blueprint: true});
-
-  let e = new Example();
+  Foo.blueprint({before_blueprint_check: true});
 
   t.doesNotThrow(() => {
-    e.check_blueprint()
+    Foo.blueprint_check()
   });
-  t.equals(e.shortname, 'name');
+  t.equals(Foo.foo, 'name');
   t.end()
 });
 
-test('should support "after blueprint check" hook on static blueprint', t => {
-  class Example {
-    static after_check_blueprint() {
-      this._shortname = 'after_name'
+test('should support "before blueprint check" hook on proto blueprints', t => {
+  class Foo {
+    get blueprints() {
+      return [Blueprint('foo', is_type('string'))];
     }
 
-    static get shortname() {
-      return this._shortname
-    }
-    static set shortname(shortname) {
-      this._shortname = shortname
-    }
-
-    static get blueprint() {
-      return [Blueprint('shortname', is_type('string'))];
+    before_blueprint_check() {
+      this.foo = 'name'
     }
   }
-  Example.blueprint_static({after_check_blueprint: true});
-  Example.shortname = 'before_name'
+  Foo.blueprint({before_blueprint_check: true});
 
-  t.doesNotThrow(() => { Example.check_blueprint() });
-  t.equals(Example.shortname, 'after_name');
+  let e = new Foo();
+
+  t.doesNotThrow(() => {
+    e.blueprint_check()
+  });
+  t.equals(e.foo, 'name');
   t.end()
 });
 
-test('should support "after blueprint check" hook on proto blueprint', t => {
-  class Example {
-    after_check_blueprint() {
-      this._shortname = 'after_name'
+test('should support "after blueprint check" hook on static blueprints', t => {
+  class Foo {
+    static after_blueprint_check() {
+      this.foo = 'after_foo'
     }
 
-    get blueprint() {
-      return [Blueprint('shortname', is_type('string'))];
+    static get foo() {
+      return this.__foo__
+    }
+    static set foo(foo) {
+      this.__foo__ = foo
     }
 
-    get shortname() {
-      return this._shortname
-    }
-    set shortname(shortname) {
-      this._shortname = shortname
+    static get blueprints() {
+      return [Blueprint('foo', is_type('string'))];
     }
   }
-  Example.blueprint_proto({after_check_blueprint: true});
+  Foo.blueprint({after_blueprint_check: true});
+  Foo.foo = 'before_foo';
+  Foo.blueprint_check();
 
-  let e = new Example();
-  e.shortname = 'before_name';
+  t.equals(Foo.foo, 'after_foo');
+  t.end()
+});
 
-  t.doesNotThrow(() => { e.check_blueprint() });
-  t.equals(e.shortname, 'after_name');
+test('should support "after blueprint check" hook on proto blueprints', t => {
+  class Foo {
+    after_blueprint_check() {
+      this.foo = 'after_foo'
+    }
+
+    get blueprints() {
+      return [Blueprint('foo', is_type('string'))];
+    }
+
+    get foo() {
+      return this.__foo__
+    }
+    set foo(foo) {
+      this.__foo__ = foo
+    }
+  }
+  Foo.blueprint({after_blueprint_check: true});
+
+  let e = new Foo();
+  e.foo = 'before_foo';
+  e.blueprint_check();
+
+  t.equals(e.foo, 'after_foo');
   t.end()
 });
