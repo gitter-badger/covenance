@@ -1,7 +1,8 @@
 import mixin_a_lot from 'mixin-a-lot';
 import Scheme from './scheme';
 
-const blueprint_check = ({target, blueprints, own_properties = false}) => {
+
+const blueprint_check = (target, blueprints, own_properties = false) => {
   for (let scheme of blueprints) {
     if (own_properties && !target.hasOwnProperty(scheme.attribute)) {
       throw new TypeError(`'${scheme.attribute}' not found on target`)
@@ -33,7 +34,7 @@ const validates_blueprints = mixin_a_lot.make_mixin({
   },
 
   blueprint_check() {
-    blueprint_check({target: this, blueprints: this[BLUEPRINTS_KEY]});
+    blueprint_check(this, this[BLUEPRINTS_KEY]);
     return this
   }
 
