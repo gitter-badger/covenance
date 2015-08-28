@@ -1,5 +1,5 @@
 import test from 'tape'
-import {is_type_of} from './utilities'
+import {is_string, is_function, is_number} from './utilities'
 
 import {ABC} from './abc'
 import scheme from './scheme'
@@ -9,9 +9,9 @@ const make_ABC = () => {
   return ABC({
     name: 'ABC',
     proto: {
-      blueprints: scheme.Blueprints(
-        ['proto1', is_type_of('string')],
-        ['proto2', is_type_of('function')]
+      blueprints: Scheme.Blueprints(
+        ['proto1', is_string],
+        ['proto2', is_function]
       ),
       props: {
         proto1: 'proto1',
@@ -21,9 +21,9 @@ const make_ABC = () => {
       }
     },
     klass: {
-      blueprints: scheme.Blueprints(
-        ['static1', is_type_of('number')],
-        ['static2', is_type_of('function')]
+      blueprints: Scheme.Blueprints(
+        ['static1', is_number],
+        ['static2', is_function]
       ),
       props: {
         static1: 1,

@@ -1,6 +1,6 @@
 import test from 'tape'
 import blueprint from './blueprint'
-import {is_type_of} from './utilities'
+import {is_string, is_number, is_function} from './utilities'
 
 
 test('should throw when blueprinting a non-function', t => {
@@ -52,8 +52,8 @@ test('should check the prototype blueprints', t => {
 
     get blueprints() {
       return blueprint.Blueprints(
-        ['x', is_type_of('number')],
-        ['y', is_type_of('number')]
+        ['x', is_number],
+        ['y', is_number]
       )
     }
   }
@@ -104,7 +104,7 @@ test('should support a before_blueprint hook on static blueprints', t => {
 test('should support a before_blueprint hook on proto blueprints', t => {
   class Example {
     get blueprints() {
-      return blueprint.Blueprints(['foo', is_type_of('string')])
+      return blueprint.Blueprints(['foo', is_string])
     }
   }
 
@@ -121,7 +121,7 @@ test('should support a before_blueprint hook on proto blueprints', t => {
 test('should support "before blueprint check" hook on static blueprints', t => {
   class Example {
     static get blueprints() {
-      return blueprint.Blueprints(['foo', is_type_of('string')])
+      return blueprint.Blueprints(['foo', is_string])
     }
   }
   blueprint.execute_on(Example, {
@@ -140,7 +140,7 @@ test('should support "before blueprint check" hook on static blueprints', t => {
 test('should support "before blueprint check" hook on proto blueprints', t => {
   class Example {
     get blueprints() {
-      return blueprint.Blueprints(['foo', is_type_of('string')])
+      return blueprint.Blueprints(['foo', is_string])
     }
   }
   blueprint.execute_on(Example, {
@@ -164,7 +164,7 @@ test('should support "before blueprint check" hook on proto blueprints', t => {
 test('should support "after blueprint check" hook on static blueprints', t => {
   class Example {
     static get blueprints() {
-      return blueprint.Blueprints(['foo', is_type_of('string')])
+      return blueprint.Blueprints(['foo', is_string])
     }
   }
   blueprint.execute_on(Example, {
@@ -182,7 +182,7 @@ test('should support "after blueprint check" hook on static blueprints', t => {
 test('should support "after blueprint check" hook on proto blueprints', t => {
   class Example {
     get blueprints() {
-      return blueprint.Blueprints(['foo', is_type_of('string')])
+      return blueprint.Blueprints(['foo', is_string])
     }
   }
   blueprint.execute_on(Example, {
@@ -206,15 +206,15 @@ test('should work with a mix of proto and static blueprints', t => {
   class Example {
     get blueprints() {
       return blueprint.Blueprints(
-        ['proto_foo1', is_type_of('string')],
-        ['proto_foo2', is_type_of('number')]
+        ['proto_foo1', is_string],
+        ['proto_foo2', is_number]
       )
     }
 
     static get blueprints() {
       return blueprint.Blueprints(
-        ['static_foo1', is_type_of('string')],
-        ['static_foo2', is_type_of('number')]
+        ['static_foo1', is_string],
+        ['static_foo2', is_number]
       )
     }
   }

@@ -1,10 +1,8 @@
 import mixin_a_lot from 'mixin-a-lot';
 import scheme from './scheme';
 import {validates_blueprints, BLUEPRINTS_KEY} from './mixin'
-import {merge_own, is_type_of} from './utilities'
 
 
-let is_function = is_type_of('function');
 
 // glue blueprint-specific options back to mixin-a-lot
 const glue_api_options = (options) => {
@@ -23,6 +21,7 @@ const glue_api_options = (options) => {
 
 export default {
   execute_on(fn, options = {}) {
+import {merge_own, is_function} from './utilities'
     if (!is_function(fn)) {
       throw new Error(`Expected function type to blueprint, got ${fn}`)
     }

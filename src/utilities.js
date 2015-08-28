@@ -13,4 +13,9 @@ const is_type_of = (type) => {
   }
 };
 
-export default {merge_own, is_type_of}
+export default {
+  merge_own,
+  is_string: is_type_of('string'),
+  is_function: is_type_of('function'),
+  is_number: is_type_of('number')
+}
