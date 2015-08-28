@@ -1,14 +1,14 @@
 import mixin_a_lot from 'mixin-a-lot';
 import scheme from './scheme';
 import {validates_blueprints, BLUEPRINTS_KEY} from './mixin'
-import {merge, is_type} from './utilities'
+import {merge_own, is_type_of} from './utilities'
 
 
-let is_function = is_type('function');
+let is_function = is_type_of('function');
 
 // glue blueprint-specific options back to mixin-a-lot
 const glue_api_options = (options) => {
-  options = merge(options, {
+  options = merge_own(options, {
     premix: options.before_blueprint,
     postmix: options.after_blueprint
   });

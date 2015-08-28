@@ -1,6 +1,6 @@
 import test from 'tape'
 import Scheme from './scheme'
-import {is_type} from './utilities'
+import {is_type_of} from './utilities'
 
 
 test('should throw when creating with wrong signature', t => {
@@ -79,7 +79,7 @@ test('should throw when creating with wrong types', t => {
 });
 
 test('should read properties', t => {
-  let [attribute, predicate] = ['foo', is_type('string')];
+  let [attribute, predicate] = ['foo', is_type_of('string')];
   let scheme = Scheme.of({attribute, predicate});
 
   t.equals(scheme.attribute, attribute);

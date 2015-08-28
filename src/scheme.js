@@ -1,4 +1,4 @@
-import {merge} from './utilities'
+import {merge_own} from './utilities'
 import frosty from 'frosty'
 
 
