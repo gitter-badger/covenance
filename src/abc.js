@@ -1,5 +1,5 @@
 import {blueprint_check, BLUEPRINTS_KEY} from './mixin'
-import _ from 'underscore'
+import {merge_own} from './utilities'
 
 
 export default {
@@ -29,13 +29,13 @@ export default {
       }
     }
     if (proto) {
-      _.extendOwn(A.prototype, proto.props);
+      merge_own(A.prototype, proto.props);
       if (proto[BLUEPRINTS_KEY]) {
         A.prototype[BLUEPRINTS_KEY] = proto[BLUEPRINTS_KEY];
       }
     }
     if (klass) {
-      _.extendOwn(A, klass.props);
+      merge_own(A, klass.props);
       if (klass[BLUEPRINTS_KEY]) {
         A[BLUEPRINTS_KEY] = klass[BLUEPRINTS_KEY];
       }
