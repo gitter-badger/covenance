@@ -61,7 +61,7 @@ test("should throw an error when implementation doesn't implement all proto prop
       }
     }
     ABC.register(I)
-  }, /'proto2': 'undefined' failed blueprint check$/);
+  }, /'proto2' not found on target$/);
   t.end()
 });
 
@@ -80,7 +80,7 @@ test("should throw an error when implementation doesn't implement all static pro
       }
     }
     ABC.register(I)
-  }, /'static1': 'undefined' failed blueprint check$/);
+  }, /'static1' not found on target$/);
   t.end()
 });
 

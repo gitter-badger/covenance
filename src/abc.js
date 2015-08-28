@@ -16,29 +16,35 @@ export default {
       }
 
       static register(impl) {
+        let own_properties = true;
         if (typeof impl !== 'function') {
           throw new Error(`Abstract class ${name} can only register functions`)
         }
         if (A.prototype[BLUEPRINTS_KEY]) {
           blueprint_check({
             target: impl.prototype,
-            blueprints: A.prototype[BLUEPRINTS_KEY]
+            blueprints: A.prototype[BLUEPRINTS_KEY],
+            own_properties
           })
         }
         if (A[BLUEPRINTS_KEY]) {
-          blueprint_check({target: impl, blueprints: A[BLUEPRINTS_KEY]})
+          blueprint_check({
+            target: impl,
+            blueprints: A[BLUEPRINTS_KEY],
+            own_properties
+          })
         }
         return impl
       }
     }
     if (proto) {
-      _.extend(A.prototype, proto.props);
+      _.extendOwn(A.prototype, proto.props);
       if (proto[BLUEPRINTS_KEY]) {
         A.prototype[BLUEPRINTS_KEY] = proto[BLUEPRINTS_KEY];
       }
     }
     if (klass) {
-      _.extend(A, klass.props);
+      _.extendOwn(A, klass.props);
       if (klass[BLUEPRINTS_KEY]) {
         A[BLUEPRINTS_KEY] = klass[BLUEPRINTS_KEY];
       }

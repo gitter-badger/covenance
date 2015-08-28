@@ -1,9 +1,11 @@
 import mixin_a_lot from 'mixin-a-lot';
 import Scheme from './scheme';
 
-const blueprint_check = ({target, blueprints}) => {
+const blueprint_check = ({target, blueprints, own_properties = false}) => {
   for (let scheme of blueprints) {
-    if (!scheme.predicate(target[scheme.attribute])) {
+    if (own_properties && !target.hasOwnProperty(scheme.attribute)) {
+      throw new TypeError(`'${scheme.attribute}' not found on target`)
+    } else if (!scheme.predicate(target[scheme.attribute])) {
       throw new TypeError(
         `'${scheme.attribute}': '${target[scheme.attribute]}' failed blueprint check`);
     }
