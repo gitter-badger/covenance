@@ -60,7 +60,7 @@ test("should throw an error when implementation doesn't implement all proto prop
         return 'I_proto1';
       }
     }
-    ABC.register(I)
+    ABC.cast(I);
   }, /'proto2' not found on target$/);
   t.end()
 });
@@ -79,12 +79,12 @@ test("should throw an error when implementation doesn't implement all static pro
         return 'I_static2'
       }
     }
-    ABC.register(I)
+    ABC.cast(I);
   }, /'static1' not found on target$/);
   t.end()
 });
 
-test('should register a valid implementation', t => {
+test('should cast a valid implementation', t => {
   let ABC = make_ABC();
   class I extends ABC {
     get proto1() {
@@ -102,7 +102,7 @@ test('should register a valid implementation', t => {
   }
 
   t.doesNotThrow(() => {
-    ABC.register(I)
+    ABC.cast(I);
   });
   t.end()
 });
@@ -124,7 +124,7 @@ test('should allow an implementation to invoke a base abstract method', t => {
     }
   }
 
-  ABC.register(I)
+  ABC.cast(I);
 
   let i = new I();
 

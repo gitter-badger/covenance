@@ -15,9 +15,9 @@ export default {
         return name
       }
 
-      static register(impl) {
+      static cast(impl) {
         if (typeof impl !== 'function') {
-          throw new Error(`Abstract class ${name} can only register functions`)
+          throw new Error(`Abstract class ${name} can only cast functions`)
         }
         if (A.prototype[BLUEPRINTS_KEY]) {
           blueprint_check(impl.prototype, A.prototype[BLUEPRINTS_KEY], true)
