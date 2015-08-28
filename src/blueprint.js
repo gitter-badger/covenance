@@ -1,63 +1,46 @@
-import {merge} from './utilities'
-import frosty from 'frosty'
+import mixin_a_lot from 'mixin-a-lot';
+import scheme from './scheme';
+import {validates_blueprints, BLUEPRINTS_KEY} from './mixin'
+import {merge, is_type} from './utilities'
 
 
-class Blueprint {
-  constructor({attribute, predicate}) {
-    this.attribute = attribute;
-    this.predicate = predicate;
+let is_function = is_type('function');
+
+// glue blueprint-specific options back to mixin-a-lot
+const glue_api_options = (options) => {
+  options = merge(options, {
+    premix: options.before_blueprint,
+    postmix: options.after_blueprint
+  });
+  if (is_function(options.before_blueprint_check)) {
+    options.before_hook = {blueprint_check: options.before_blueprint_check}
   }
-}
-
-frosty.freeze(Blueprint.prototype, 'attribute', 'predicate');
-
-const USAGE = `
-Expected {attribute: [string], predicate: [function]}, or ([string], [function]).`;
-
-let __construct__ = (...args) => {
-  let check_args = (attribute, predicate) => {
-    if (typeof attribute !== 'string') {
-      throw new Error(`Expected ${attribute} to be a string`)
-    } else if (typeof predicate !== 'function') {
-      throw new Error(`Expected ${predicate} to be a function`)
-    }
-  };
-  let attribute, predicate;
-  if (args.length === 2) {
-    attribute = args[0];
-    predicate = args[1];
-  } else if (args.length === 1) {
-    let named = args[0];
-    if (typeof named !== 'object') {
-      throw new Error(USAGE)
-    } else {
-      attribute = named.attribute;
-      predicate = named.predicate;
-    }
-  } else {
-    throw new Error(USAGE)
+  if (is_function(options.after_blueprint_check)) {
+    options.after_hook = {blueprint_check: options.after_blueprint_check}
   }
-  check_args(attribute, predicate);
-  return new Blueprint({attribute, predicate})
+  return options
 };
 
 export default {
-  Blueprint: __construct__,
-
-  // Returns immutable Array of Blueprints.
-  Blueprints(...args) {
-    return Object.freeze(args.map((arg) => {
-      if (Array.isArray(arg)) {
-        return __construct__(...arg);
-      } else if (typeof arg === 'object') {
-        return __construct__(arg);
-      } else {
-        throw new Error(USAGE)
-      }
-    }));
+  execute_on(fn, options = {}) {
+    if (!is_function(fn)) {
+      throw new Error(`Expected function type to blueprint, got ${fn}`)
+    }
+    if (fn.prototype[BLUEPRINTS_KEY]) {
+      mixin_a_lot.mix(fn.prototype, validates_blueprints, glue_api_options(options));
+    }
+    if (fn[BLUEPRINTS_KEY]) {
+      mixin_a_lot.mix(fn, validates_blueprints, glue_api_options(options));
+    }
+    if (!fn.prototype[BLUEPRINTS_KEY] && !fn[BLUEPRINTS_KEY]) {
+      throw new Error('Found no static or prototype blueprints.')
+    }
   },
 
-  is_Blueprint(thing) {
-    return thing instanceof Blueprint
-  }
+  Blueprints: scheme.Blueprints.bind(scheme)
 }
+
+
+
+
+

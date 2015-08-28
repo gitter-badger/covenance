@@ -1,97 +1,268 @@
 import test from 'tape'
-import {Blueprint, Blueprints, is_Blueprint} from './blueprint'
+import blueprint from './blueprint'
 import {is_type} from './utilities'
 
 
-test('should throw when creating with wrong signature', t => {
-  t.throws(() => {
-    Blueprint()
-  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
-  t.throws(() => {
-    Blueprint(1, 2, 3)
-  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
+test('should throw when blueprinting a non-function', t => {
+  for (let target of [1, {}, 'string', false, null, undefined]) {
+    t.throws(() => {
+      blueprint.execute_on(target)
+    }, /Expected function type to blueprint/)
+  }
   t.end()
 });
 
-test('should not throw when creating with right signature', t => {
+test('should throw when blueprinting without `blueprints` property', t => {
+  class Example {}
+
+  t.throws(() => {
+    blueprint.execute_on(Example)
+  }, /Found no static or prototype blueprints.$/);
+  t.end()
+});
+
+test('should throw when blueprinting with wrongly typed `blueprints`', t => {
+
+  t.throws(() => {
+    class Example {
+      get blueprints() {
+        return [{}];
+      }
+    }
+    blueprint.execute_on(Example)
+  }, /^TypeError: Expected element '\[object Object]' of 'blueprints' to be a Scheme/);
+  t.throws(() => {
+    class Example {
+      static get blueprints() {
+        return [1];
+      }
+    }
+    blueprint.execute_on(Example)
+  }, /^TypeError: Expected element '1' of 'blueprints' to be a Scheme/);
+  t.end()
+});
+
+test('should check the prototype blueprints', t => {
+  class Point {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.blueprint_check()
+    }
+
+    get blueprints() {
+      return blueprint.Blueprints(
+        ['x', is_type('number')],
+        ['y', is_type('number')]
+      )
+    }
+  }
+  blueprint.execute_on(Point);
+
+  t.throws(() => {
+    new Point(1, 'string')
+  }, /^TypeError: 'y': 'string' failed blueprint check$/);
+  t.end()
+});
+
+test('should check the static blueprints', t => {
+  class Example {
+    static get blueprints() {
+      return blueprint.Blueprints(['foo', is_type('string')])
+    }
+  }
+  blueprint.execute_on(Example);
+
+  t.throws(() => {
+    Example.foo = true;
+    Example.blueprint_check()
+  }, /^TypeError: 'foo': 'true' failed blueprint check$/);
+  t.throws(() => {
+    delete Example.foo;
+    Example.blueprint_check()
+  }, /^TypeError: 'foo': 'undefined' failed blueprint check$/);
+  t.end()
+});
+
+test('should support a before_blueprint hook on static blueprints', t => {
+  class Example {
+    static get blueprints() {
+      return blueprint.Blueprints(['foo', is_type('string')])
+    }
+  }
+
+  t.throws(() => {
+    blueprint.execute_on(Example, {
+      before_blueprint() {
+        delete this.blueprints
+      }
+    });
+  }, /Expected property 'blueprints' to be an Array$/);
+  t.end()
+});
+
+test('should support a before_blueprint hook on proto blueprints', t => {
+  class Example {
+    get blueprints() {
+      return blueprint.Blueprints(['foo', is_type('string')])
+    }
+  }
+
+  t.throws(() => {
+    blueprint.execute_on(Example, {
+      before_blueprint() {
+        delete this.blueprints
+      }
+    })
+  }, /Expected property 'blueprints' to be an Array$/);
+  t.end()
+});
+
+test('should support "before blueprint check" hook on static blueprints', t => {
+  class Example {
+    static get blueprints() {
+      return blueprint.Blueprints(['foo', is_type('string')])
+    }
+  }
+  blueprint.execute_on(Example, {
+    before_blueprint_check() {
+      this.foo = 'name'
+    }
+  });
+
   t.doesNotThrow(() => {
-    Blueprint({attribute: 'string', predicate: () => {}})
-  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
+    Example.blueprint_check()
+  });
+  t.equals(Example.foo, 'name');
+  t.end()
+});
+
+test('should support "before blueprint check" hook on proto blueprints', t => {
+  class Example {
+    get blueprints() {
+      return blueprint.Blueprints(['foo', is_type('string')])
+    }
+  }
+  blueprint.execute_on(Example, {
+    before_blueprint_check() {
+      // 'this' is the prototype; see:
+      //
+      //    https://github.com/yangmillstheory/mixin.a.lot#-mix-options--mixin-method-hooks
+      this.foo = 'name'
+    }
+  });
+
+  let foo = new Example();
+
   t.doesNotThrow(() => {
-    Blueprint('string', () => {})
-  }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
+    foo.blueprint_check()
+  });
+  t.equals(foo.foo, 'name');
   t.end()
 });
 
-test('should create many Blueprints with positional tuple arguments', t => {
-  let blueprints = Blueprints(['blueprint1', () => {}], ['blueprint2', () => {}]);
-
-  t.ok(Array.isArray(blueprints));
-  for (let blueprint of blueprints) {
-    t.ok(is_Blueprint(blueprint))
+test('should support "after blueprint check" hook on static blueprints', t => {
+  class Example {
+    static get blueprints() {
+      return blueprint.Blueprints(['foo', is_type('string')])
+    }
   }
+  blueprint.execute_on(Example, {
+    after_blueprint_check() {
+      this.foo = 'after_foo'
+    }
+  });
+  Example.foo = 'before_foo';
+  Example.blueprint_check();
+
+  t.equals(Example.foo, 'after_foo');
   t.end()
 });
 
-test('should create many Blueprints with positional object arguments', t => {
-  let blueprints = Blueprints(
-    {attribute: 'blueprint1', predicate: () => {}},
-    {attribute: 'blueprint2', predicate: () => {}}
-  );
-
-  t.ok(Array.isArray(blueprints));
-  for (let blueprint of blueprints) {
-    t.ok(is_Blueprint(blueprint))
+test('should support "after blueprint check" hook on proto blueprints', t => {
+  class Example {
+    get blueprints() {
+      return blueprint.Blueprints(['foo', is_type('string')])
+    }
   }
+  blueprint.execute_on(Example, {
+    after_blueprint_check(instance) {
+      // You can use the instance, or 'this', which is Example.prototype.
+      instance.foo = 'after_foo'
+    }
+  });
+
+  let f = new Example();
+  f.foo ='before_foo';
+
+  f.blueprint_check();
+
+  t.equals(f.foo, 'after_foo');
   t.end()
 });
 
-test('should create many Blueprints with mixed positional arguments', t => {
-  let blueprints = Blueprints(
-    ['blueprint1', () => {}],
-    {attribute: 'blueprint2', predicate: () => {}}
-  );
 
-  t.ok(Array.isArray(blueprints));
-  for (let blueprint of blueprints) {
-    t.ok(is_Blueprint(blueprint))
+test('should work with a mix of proto and static blueprints', t => {
+  class Example {
+    get blueprints() {
+      return blueprint.Blueprints(
+        ['proto_foo1', is_type('string')],
+        ['proto_foo2', is_type('number')]
+      )
+    }
+
+    static get blueprints() {
+      return blueprint.Blueprints(
+        ['static_foo1', is_type('string')],
+        ['static_foo2', is_type('number')]
+      )
+    }
   }
-  t.end()
-});
 
-test('should throw when creating with wrong types', t => {
-  t.throws(() => {
-    Blueprint({attribute: 1, predicate: () => {}})
-  }, new RegExp(`Expected ${1} to be a string`));
-  t.throws(() => {
-    Blueprint({attribute: 'string', predicate: []})
-  }, new RegExp(`Expected ${[]} to be a function`));
-  t.throws(() => {
-    Blueprint(1, () => {})
-  }, new RegExp(`Expected ${1} to be a string`));
-  t.throws(() => {
-    Blueprint('string', [])
-  }, new RegExp(`Expected ${[]} to be a function`));
-  t.end();
-});
+  let f = new Example();
 
-test('should read properties', t => {
-  let [attribute, predicate] = ['foo', is_type('string')];
-  let scheme = Blueprint({attribute, predicate});
-
-  t.equals(scheme.attribute, attribute);
-  t.equals(scheme.predicate, predicate);
-  t.end()
-});
-
-test('should not set properties again', t => {
-  let scheme = Blueprint({attribute: 'foo', predicate: () => {}});
+  blueprint.execute_on(Example, {
+    after_blueprint_check(instance) {
+      if (instance === Example) {
+        this.static_foo1 = 'you win!'
+      } else {
+        instance.proto_foo1 = 'you win!'
+      }
+    }
+  });
 
   t.throws(() => {
-    scheme.attribute = 'bar'
-  }, /attribute is immutable/);
+    Example.static_foo1 = 'string';
+    Example.static_foo2 = 'string';
+
+    f.proto_foo1 = 'string';
+    f.proto_foo2 = 1;
+
+    Example.blueprint_check()
+  }, /^TypeError: 'static_foo2': 'string' failed blueprint check$/);
+
   t.throws(() => {
-    scheme.predicate = () => {}
-  }, /predicate is immutable/);
+    Example.static_foo1 = 'string';
+    Example.static_foo2 = 1;
+
+    f.proto_foo1 = [];
+    f.proto_foo2 = 1;
+
+    f.blueprint_check()
+  }, /^TypeError: 'proto_foo1': .+ failed blueprint check$/);
+
+  Example.static_foo1 = 'string';
+  Example.static_foo2 = 2;
+
+  f.proto_foo1 = 'string';
+  f.proto_foo2 = 1;
+
+  t.doesNotThrow(() => {
+    f.blueprint_check();
+    Example.blueprint_check();
+  });
+
+  t.equals(f.proto_foo1, 'you win!');
+  t.equals(Example.static_foo1, 'you win!');
   t.end()
 });

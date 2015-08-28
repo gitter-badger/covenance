@@ -1,10 +1,6 @@
-import blueprint from './blueprint'
 import {blueprint_check, BLUEPRINTS_KEY} from './mixin'
-import {enable as enable_blueprints} from './index'
-import {is_type, inherit} from './utilities'
 import _ from 'underscore'
 
-enable_blueprints();
 
 export default {
   ABC({name, proto, klass}) {

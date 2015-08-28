@@ -2,14 +2,14 @@ import test from 'tape'
 import {is_type} from './utilities'
 
 import {ABC} from './abc'
-import blueprint from './blueprint'
+import scheme from './scheme'
 
 
 const make_ABC = () => {
   return ABC({
     name: 'ABC',
     proto: {
-      blueprints: blueprint.Blueprints(
+      blueprints: scheme.Blueprints(
         ['proto1', is_type('string')],
         ['proto2', is_type('function')]
       ),
@@ -21,7 +21,7 @@ const make_ABC = () => {
       }
     },
     klass: {
-      blueprints: blueprint.Blueprints(
+      blueprints: scheme.Blueprints(
         ['static1', is_type('number')],
         ['static2', is_type('function')]
       ),
@@ -51,20 +51,25 @@ test('should throw an error when instantiated directly', t => {
   t.end()
 });
 
-test('should throw an error when implementation does not implement all props', t => {
+test("should throw an error when implementation doesn't implement all proto props", t => {
   let ABC = make_ABC();
 
   t.throws(() => {
-    class I {
+    class I extends ABC {
       get proto1() {
         return 'I_proto1';
       }
     }
-    ABC.implemented_by(I)
+    ABC.register(I)
   }, /'proto2': 'undefined' failed blueprint check$/);
+  t.end()
+});
+
+test("should throw an error when implementation doesn't implement all static props", t => {
+  let ABC = make_ABC();
 
   t.throws(() => {
-    class I {
+    class I extends ABC {
       get proto1() {
         return 'I_proto1';
       }
@@ -74,8 +79,31 @@ test('should throw an error when implementation does not implement all props', t
         return 'I_static2'
       }
     }
-    ABC.implemented_by(I)
+    ABC.register(I)
   }, /'static1': 'undefined' failed blueprint check$/);
+  t.end()
+});
+
+test('should register a valid implementation', t => {
+  let ABC = make_ABC();
+  class I extends ABC {
+    get proto1() {
+      return 'I_proto1'
+    }
+    proto2() {
+      return super.proto2()
+    }
+    static get static1() {
+      return super.static1 + 1000
+    }
+    static static2() {
+      return 'I_static2'
+    }
+  }
+
+  t.doesNotThrow(() => {
+    ABC.register(I)
+  });
   t.end()
 });
 
@@ -96,9 +124,7 @@ test('should allow an implementation to invoke a base abstract method', t => {
     }
   }
 
-  t.doesNotThrow(() => {
-    ABC.implemented_by(I);
-  });
+  ABC.register(I)
 
   let i = new I();
 
@@ -112,16 +138,3 @@ test('should allow an implementation to invoke a base abstract method', t => {
 
   t.end()
 });
-
-
-//test.skip('should throw an error when implementation does not satisfy blueprint', t => {
-//
-//});
-//
-//test.skip('should expose abstract methods to implementations', t => {
-//
-//});
-//
-//test.skip('should allow implementations to override abstract methods', t => {
-//
-//});

@@ -1,5 +1,5 @@
 import mixin_a_lot from 'mixin-a-lot';
-import {Blueprint, is_Blueprint} from './blueprint';
+import Scheme from './scheme';
 
 const blueprint_check = ({target, blueprints}) => {
   for (let scheme of blueprints) {
@@ -11,7 +11,7 @@ const blueprint_check = ({target, blueprints}) => {
 };
 
 const BLUEPRINTS_KEY = 'blueprints';
-const acts_as_blueprinted = mixin_a_lot.make_mixin({
+const validates_blueprints = mixin_a_lot.make_mixin({
 
   name: 'blueprinted',
 
@@ -23,9 +23,9 @@ const acts_as_blueprinted = mixin_a_lot.make_mixin({
       throw new TypeError(`Expected property '${BLUEPRINTS_KEY}' to be an Array`)
     }
     for (let scheme of blueprints) {
-      if (!(is_Blueprint(scheme))) {
+      if (!(Scheme.is(scheme))) {
         throw new TypeError(
-          `Expected element '${scheme}' of '${BLUEPRINTS_KEY}' to be a Blueprint`);
+          `Expected element '${scheme}' of '${BLUEPRINTS_KEY}' to be a Scheme`);
       }
     }
   },
@@ -37,4 +37,4 @@ const acts_as_blueprinted = mixin_a_lot.make_mixin({
 
 });
 
-export default {acts_as_blueprinted, BLUEPRINTS_KEY, blueprint_check}
+export default {validates_blueprints, BLUEPRINTS_KEY, blueprint_check}
