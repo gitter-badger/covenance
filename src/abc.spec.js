@@ -2,7 +2,7 @@ import test from 'tape'
 import {is_string, is_function, is_number} from './utilities'
 
 import {ABC} from './abc'
-import scheme from './scheme'
+import Scheme from './scheme'
 
 
 const make_ABC = () => {

@@ -6,43 +6,81 @@ import {is_string, is_number, is_function} from './utilities'
 test('should throw when blueprinting a non-function', t => {
   for (let target of [1, {}, 'string', false, null, undefined]) {
     t.throws(() => {
-      blueprint.execute_on(target)
+      blueprint.execute(target)
     }, /Expected function type to blueprint/)
   }
   t.end()
 });
 
-test('should throw when blueprinting without `blueprints` property', t => {
+test('should throw when blueprinting without blueprints', t => {
   class Example {}
 
   t.throws(() => {
-    blueprint.execute_on(Example)
+    blueprint.execute(Example)
   }, /Found no static or prototype blueprints.$/);
   t.end()
 });
 
-test('should throw when blueprinting with wrongly typed `blueprints`', t => {
-
+test('should throw when blueprinting with wrongly typed prototype blueprints', t => {
   t.throws(() => {
     class Example {
       get blueprints() {
         return [{}];
       }
     }
-    blueprint.execute_on(Example)
+    blueprint.execute(Example)
   }, /^TypeError: Expected element '\[object Object]' of 'blueprints' to be a Scheme/);
+  t.end()
+});
+
+test('should throw when blueprinting with wrongly typed static blueprints', t => {
   t.throws(() => {
     class Example {
       static get blueprints() {
         return [1];
       }
     }
-    blueprint.execute_on(Example)
+    blueprint.execute(Example)
   }, /^TypeError: Expected element '1' of 'blueprints' to be a Scheme/);
   t.end()
 });
 
-test('should check the prototype blueprints', t => {
+
+test('should add a blueprint checking method on the prototype', t => {
+  class Example {
+    get blueprints() {
+      return blueprint.Blueprints(['example', is_string])
+    }
+
+    get example() {
+      return 'example'
+    }
+  }
+
+  blueprint.execute(Example);
+
+  t.ok(is_function(Example.prototype.blueprint_check));
+  t.end()
+});
+
+test('should add a blueprint checking method on the class', t => {
+  class Example {
+    static get blueprints() {
+      return blueprint.Blueprints(['example', is_string])
+    }
+
+    static get example() {
+      return 'example'
+    }
+  }
+
+  blueprint.execute(Example);
+
+  t.ok(is_function(Example.blueprint_check));
+  t.end()
+});
+
+test('should check instance blueprints', t => {
   class Point {
     constructor(x, y) {
       this.x = x;
@@ -57,7 +95,7 @@ test('should check the prototype blueprints', t => {
       )
     }
   }
-  blueprint.execute_on(Point);
+  blueprint.execute(Point);
 
   t.throws(() => {
     new Point(1, 'string')
@@ -65,13 +103,13 @@ test('should check the prototype blueprints', t => {
   t.end()
 });
 
-test('should check the static blueprints', t => {
+test('should check static blueprints', t => {
   class Example {
     static get blueprints() {
-      return blueprint.Blueprints(['foo', is_type_of('string')])
+      return blueprint.Blueprints(['foo', is_string])
     }
   }
-  blueprint.execute_on(Example);
+  blueprint.execute(Example);
 
   t.throws(() => {
     Example.foo = true;
@@ -87,12 +125,12 @@ test('should check the static blueprints', t => {
 test('should support a before_blueprint hook on static blueprints', t => {
   class Example {
     static get blueprints() {
-      return blueprint.Blueprints(['foo', is_type_of('string')])
+      return blueprint.Blueprints(['foo', is_string])
     }
   }
 
   t.throws(() => {
-    blueprint.execute_on(Example, {
+    blueprint.execute(Example, {
       before_blueprint() {
         delete this.blueprints
       }
@@ -109,7 +147,7 @@ test('should support a before_blueprint hook on proto blueprints', t => {
   }
 
   t.throws(() => {
-    blueprint.execute_on(Example, {
+    blueprint.execute(Example, {
       before_blueprint() {
         delete this.blueprints
       }
@@ -124,8 +162,9 @@ test('should support "before blueprint check" hook on static blueprints', t => {
       return blueprint.Blueprints(['foo', is_string])
     }
   }
-  blueprint.execute_on(Example, {
+  blueprint.execute(Example, {
     before_blueprint_check() {
+      t.is(this, Example);
       this.foo = 'name'
     }
   });
@@ -143,32 +182,35 @@ test('should support "before blueprint check" hook on proto blueprints', t => {
       return blueprint.Blueprints(['foo', is_string])
     }
   }
-  blueprint.execute_on(Example, {
+  blueprint.execute(Example, {
     before_blueprint_check() {
       // 'this' is the prototype; see:
       //
       //    https://github.com/yangmillstheory/mixin.a.lot#-mix-options--mixin-method-hooks
-      this.foo = 'name'
+      t.is(this, Example.prototype);
+      this.foo = 'foo'
     }
   });
 
-  let foo = new Example();
+  let e = new Example();
 
   t.doesNotThrow(() => {
-    foo.blueprint_check()
+    e.blueprint_check()
   });
-  t.equals(foo.foo, 'name');
+  t.equals(e.foo, 'foo');
   t.end()
 });
 
-test('should support "after blueprint check" hook on static blueprints', t => {
+test('should have static blueprint check "after hook" that returns the class', t => {
   class Example {
     static get blueprints() {
       return blueprint.Blueprints(['foo', is_string])
     }
   }
-  blueprint.execute_on(Example, {
-    after_blueprint_check() {
+  blueprint.execute(Example, {
+    after_blueprint_check(klass) {
+      t.is(klass, Example);
+      t.is(this, Example);
       this.foo = 'after_foo'
     }
   });
@@ -179,20 +221,26 @@ test('should support "after blueprint check" hook on static blueprints', t => {
   t.end()
 });
 
-test('should support "after blueprint check" hook on proto blueprints', t => {
+
+test('should have prototype blueprint check "after hook" that returns the instance', t => {
   class Example {
     get blueprints() {
       return blueprint.Blueprints(['foo', is_string])
     }
   }
-  blueprint.execute_on(Example, {
+
+  let f = new Example();
+
+  blueprint.execute(Example, {
     after_blueprint_check(instance) {
       // You can use the instance, or 'this', which is Example.prototype.
+      t.is(instance, f);
+      t.is(this, Example.prototype);
       instance.foo = 'after_foo'
     }
   });
 
-  let f = new Example();
+
   f.foo ='before_foo';
 
   f.blueprint_check();
@@ -202,7 +250,7 @@ test('should support "after blueprint check" hook on proto blueprints', t => {
 });
 
 
-test('should work with a mix of proto and static blueprints', t => {
+test('should work with a mix of prototype and static blueprints', t => {
   class Example {
     get blueprints() {
       return blueprint.Blueprints(
@@ -221,7 +269,7 @@ test('should work with a mix of proto and static blueprints', t => {
 
   let f = new Example();
 
-  blueprint.execute_on(Example, {
+  blueprint.execute(Example, {
     after_blueprint_check(instance) {
       if (instance === Example) {
         this.static_foo1 = 'you win!'
