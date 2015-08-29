@@ -17,5 +17,8 @@ export default {
   merge_own,
   is_string: is_type_of('string'),
   is_function: is_type_of('function'),
-  is_number: is_type_of('number')
+  is_number: is_type_of('number'),
+  is_object_literal(thing) {
+    return typeof thing === 'object' && !Array.isArray(thing)
+  }
 }

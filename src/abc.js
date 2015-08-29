@@ -1,45 +1,60 @@
-import {blueprint_check, BLUEPRINTS_KEY} from './mixin'
-import {merge_own} from './utilities'
+import {assert_has_blueprints, blueprint_check, BLUEPRINTS_KEY} from './mixin'
+import {merge_own, is_string, is_object_literal, is_function} from './utilities'
 
+const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;
+const USAGE = `Pass an ABC spec:
+  {
+    name: [String],
+    (proto,klass): {
+      props: [Object],
+      blueprints: [Array of Blueprints]
+    }
+  }`;
 
 export default {
-  ABC({name, proto, klass}) {
-    class A {
-      constructor() {
-        if (this.constructor === A) {
+  ABC({name, proto, klass} = {}) {
+    if (!is_string(name)) {
+      throw new Error(USAGE)
+    } else if (!CLASSNAME_PATTERN.test(name)) {
+      throw new Error(`Expected ${name} to be pseudo-CamelCase: ${CLASSNAME_PATTERN}`)
+    } else if (!is_object_literal(proto) && !is_object_literal(klass)) {
+      throw new Error(USAGE)
+    }
+    (proto && assert_has_blueprints(proto));
+    (klass && assert_has_blueprints(klass));
+    let abc = new Function(`
+      return function ${name}() {
+        if (this.constructor === ${name}) {
           throw new Error("Can't instantiate abstract class")
         }
+      };`)();
+    abc.implemented_by = (fn) => {
+      if (!is_function(fn)) {
+        throw new Error(`Abstract class ${name} can only be implemented by functions`)
       }
-
-      static toString() {
-        return name
+      if (abc.prototype[BLUEPRINTS_KEY]) {
+        blueprint_check(fn.prototype, abc.prototype[BLUEPRINTS_KEY], true)
       }
-
-      static cast(impl) {
-        if (typeof impl !== 'function') {
-          throw new Error(`Abstract class ${name} can only cast functions`)
-        }
-        if (A.prototype[BLUEPRINTS_KEY]) {
-          blueprint_check(impl.prototype, A.prototype[BLUEPRINTS_KEY], true)
-        }
-        if (A[BLUEPRINTS_KEY]) {
-          blueprint_check(impl, A[BLUEPRINTS_KEY], true)
-        }
-        return impl
+      if (abc[BLUEPRINTS_KEY]) {
+        blueprint_check(fn, abc[BLUEPRINTS_KEY], true)
       }
-    }
+      return fn
+    };
+    abc.implementedBy = abc.implemented_by;
     if (proto) {
-      merge_own(A.prototype, proto.props);
+      merge_own(abc.prototype, proto.props);
       if (proto[BLUEPRINTS_KEY]) {
-        A.prototype[BLUEPRINTS_KEY] = proto[BLUEPRINTS_KEY];
+        abc.prototype[BLUEPRINTS_KEY] = proto[BLUEPRINTS_KEY];
       }
     }
     if (klass) {
-      merge_own(A, klass.props);
+      merge_own(abc, klass.props);
       if (klass[BLUEPRINTS_KEY]) {
-        A[BLUEPRINTS_KEY] = klass[BLUEPRINTS_KEY];
+        abc[BLUEPRINTS_KEY] = klass[BLUEPRINTS_KEY];
       }
     }
-    return A;
-  }
+    return abc;
+  },
+
+  USAGE
 }

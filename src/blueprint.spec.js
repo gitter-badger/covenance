@@ -21,6 +21,26 @@ test('should throw when blueprinting without blueprints', t => {
   t.end()
 });
 
+test('should throw when blueprinting with empty blueprints', t => {
+  t.throws(() => {
+    class Example {
+      get blueprints() {
+        return []
+      }
+    }
+    blueprint.execute(Example)
+  }, /Expected property 'blueprints' to be a non-empty Array$/);
+  t.throws(() => {
+    class Example {
+      static get blueprints() {
+        return []
+      }
+    }
+    blueprint.execute(Example)
+  }, /Expected property 'blueprints' to be a non-empty Array$/);
+  t.end()
+});
+
 test('should throw when blueprinting with wrongly typed prototype blueprints', t => {
   t.throws(() => {
     class Example {
@@ -108,6 +128,13 @@ test('should check static blueprints', t => {
     static get blueprints() {
       return blueprint.Blueprints(['foo', is_string])
     }
+
+    static set foo(foo) {
+      this._foo = foo
+    }
+    static get foo() {
+      return this._foo
+    }
   }
   blueprint.execute(Example);
 
@@ -135,7 +162,7 @@ test('should support a before_blueprint hook on static blueprints', t => {
         delete this.blueprints
       }
     });
-  }, /Expected property 'blueprints' to be an Array$/);
+  }, /Expected property 'blueprints' to be a non-empty Array$/);
   t.end()
 });
 
@@ -152,7 +179,7 @@ test('should support a before_blueprint hook on proto blueprints', t => {
         delete this.blueprints
       }
     })
-  }, /Expected property 'blueprints' to be an Array$/);
+  }, /Expected property 'blueprints' to be a non-empty Array$/);
   t.end()
 });
 
