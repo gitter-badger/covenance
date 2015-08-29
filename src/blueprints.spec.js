@@ -177,6 +177,42 @@ test('should support a before_blueprint hook on proto blueprints', t => {
   t.end()
 });
 
+test('should support an after_blueprint hook on static blueprints', t => {
+  class Example {
+    static get blueprints() {
+      return blueprints.create(['foo', is_string])
+    }
+  }
+
+  t.throws(() => {
+    blueprints.execute(Example, {
+      after_blueprint() {
+        t.is(this, Example);
+        this.ok_blueprints();
+      }
+    });
+  }, /'foo': 'undefined' failed blueprint check$/);
+  t.end()
+});
+
+test('should support an after_blueprint hook on proto blueprints', t => {
+  class Example {
+    get blueprints() {
+      return blueprints.create(['foo', is_string])
+    }
+  }
+
+  t.throws(() => {
+    blueprints.execute(Example, {
+      after_blueprint() {
+        t.is(this, Example.prototype);
+        this.ok_blueprints()
+      }
+    })
+  }, /'foo': 'undefined' failed blueprint check$/);
+  t.end()
+});
+
 test('should allow a "before ok_blueprint" hook on static blueprints', t => {
   class Example {
     static get blueprints() {
