@@ -1,6 +1,6 @@
 # blueprint
 
-[![Build Status](https://travis-ci.org/yangmillstheory/frosty.svg?branch=master)](https://travis-ci.org/yangmillstheory/mixin.a.lot)
+[![Build Status](https://travis-ci.org/yangmillstheory/blueprint.svg?branch=master)](https://travis-ci.org/yangmillstheory/blueprint)
 
 Abstract base and blueprinted classes in JavaScript.
 
