@@ -74,10 +74,12 @@ test('should return an immutable Array', t => {
     {attribute: 'blueprint2', validator: () => {}}
   );
 
-  blueprints.push(0); // in the Chrome runtime, this will throw
-
-  t.equals(blueprints.length, 2);
-  t.end()
+  try {
+    blueprints.push(0); // in some engines, this will throw
+  } finally {
+    t.equals(blueprints.length, 2);
+    t.end()
+  }
 });
 
 test('should throw when creating with wrong types', t => {
