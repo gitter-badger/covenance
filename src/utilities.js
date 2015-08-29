@@ -26,7 +26,15 @@ let is_object_literal = (thing) => {
   return thing && is_object(thing) && !Array.isArray(thing)
 };
 
-const assert_one_of = function() {
+// Invoke each of the specified functions, throwing an error
+// only if all invocations threw an error.
+//
+// Signature:
+//
+//    (...fns, message)
+//
+// `message` is optional; each `fn` should be a function.
+const appeal = function() {
   let parse_arguments = () => {
     let args = Array.prototype.slice.call(arguments);
     let msg;
@@ -61,7 +69,7 @@ const assert_one_of = function() {
 
 export default {
   merge_own,
-  assert_one_of,
+  appeal,
   is_string,
   is_function,
   is_number,

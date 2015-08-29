@@ -1,5 +1,5 @@
 import {is_blueprinted, ok_blueprints, BLUEPRINTS_KEY} from './blueprinted'
-import {merge_own, is_string, is_object_literal, is_function, assert_one_of} from './utilities'
+import {merge_own, is_string, is_object_literal, is_function, appeal} from './utilities'
 
 const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;
 const USAGE = `Pass an ABC spec:
@@ -78,7 +78,7 @@ export default {
         }
       };
       // Pass if at least one of klass or proto was specified and blueprinted.
-      assert_one_of(
+      appeal(
         is_obj_and_blueprinted(proto),
         is_obj_and_blueprinted(klass),
         USAGE
