@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/blueprints.js",
   "scripts": {
-    "test": "./test.js ./**/*.spec.js | node_modules/.bin/faucet"
+    "test": "./test.js ./**/*.spec.js | node_modules/.bin/faucet",
+    "prepublish": "gulp build"
   },
   "repository": {
     "type": "git",
