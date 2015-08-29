@@ -1,8 +1,8 @@
 import test from 'tape'
 import {is_string, is_function, is_number} from './utilities'
 
-import {ABC, USAGE} from './abc'
-import Scheme from './scheme'
+import {ABC} from './abc'
+import {blueprints} from './blueprints'
 
 
 test('should reject a spec without a class name', t => {
@@ -67,7 +67,7 @@ const ExampleABC = (name = 'ExampleABC') => {
   return ABC({
     name,
     proto: {
-      blueprints: Scheme.Blueprints(
+      blueprints: blueprints.create(
         ['proto1', is_string],
         ['proto2', is_function]
       ),
@@ -79,7 +79,7 @@ const ExampleABC = (name = 'ExampleABC') => {
       }
     },
     klass: {
-      blueprints: Scheme.Blueprints(
+      blueprints: blueprints.create(
         ['static1', is_number],
         ['static2', is_function]
       ),
@@ -100,6 +100,23 @@ test('should have the right name', t => {
   t.end()
 });
 
+test('should not be implemented_by a non-subclass', t => {
+  let ABC = ExampleABC();
+  class NotASubclass {}
+  t.throws(() => {
+    ABC.implemented_by(NotASubclass)
+  }, new RegExp(`${NotASubclass.name} is not a subclass of ${ABC.name}`));
+  t.end()
+});
+
+test('should not be implemented_by a non-function', t => {
+  let ABC = ExampleABC();
+  t.throws(() => {
+    ABC.implemented_by(1)
+  }, new RegExp(`${ABC.name} cannot be implemented by a non-function`));
+  t.end()
+});
+
 test('should throw an error when instantiated from the abstract base class', t => {
   let ABC = ExampleABC();
 
@@ -109,7 +126,7 @@ test('should throw an error when instantiated from the abstract base class', t =
   t.end()
 });
 
-test("should throw an error when implementation doesn't implement all proto props", t => {
+test("should throw when implementation doesn't implement all proto blueprints", t => {
   let ABC = ExampleABC();
 
   t.throws(() => {
@@ -123,7 +140,7 @@ test("should throw an error when implementation doesn't implement all proto prop
   t.end()
 });
 
-test("should throw an error when implementation doesn't implement all static props", t => {
+test("should throw when implementation doesn't implement all static blueprints", t => {
   let ABC = ExampleABC();
 
   t.throws(() => {
@@ -142,7 +159,7 @@ test("should throw an error when implementation doesn't implement all static pro
   t.end()
 });
 
-test('should be implemented by a valid implementation', t => {
+test('should be implemented_by a valid implementation', t => {
   let ABC = ExampleABC();
   class I extends ABC {
     get proto1() {
@@ -165,7 +182,7 @@ test('should be implemented by a valid implementation', t => {
   t.end()
 });
 
-test('should allow an implementation to invoke a base abstract method', t => {
+test('should allow an implementation to invoke base abstract methods/properties', t => {
   let ABC = ExampleABC();
   class I extends ABC {
     get proto1() {
