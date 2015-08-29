@@ -11,7 +11,7 @@ const USAGE = `Pass an ABC spec:
     }
   }`;
 
-let __make_ABC__ = (name, proto, klass) => {
+let __make_ABC__ = (name, proto = {}, klass = {}) => {
   // Some magic to dynamically generate the class name.
   // See http://stackoverflow.com/a/9479081/2419669.
   let ABC = new Function(`
@@ -59,14 +59,15 @@ let __make_ABC__ = (name, proto, klass) => {
 
 export default {
   ABC({name, proto, klass} = {}) {
-    // Verify valid class name, and at least proto or class are
-    // objects with valid blueprints, consistent with blueprints.execute().
+    // Verify valid class name, and one of proto or
+    // klass are objects with valid blueprints.
     let ok_spec = (name, proto, klass) => {
       if (!is_string(name)) {
         throw new Error(USAGE)
       } else if (!CLASSNAME_PATTERN.test(name)) {
         throw new Error(`Expected ${name} to be pseudo-CamelCase: ${CLASSNAME_PATTERN}`)
-      } else if (!is_object_literal(proto) && !is_object_literal(klass)) {
+      }
+      if (!is_object_literal(proto) && !is_object_literal(klass)) {
         throw new Error(USAGE)
       }
       let is_obj_and_blueprinted = (thing) => {

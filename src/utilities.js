@@ -1,17 +1,3 @@
-const merge_own = (target, ...sources) => {
-  let merge_one = (obj) => {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        target[key] = obj[key]
-      }
-    }
-  };
-  for (let source of sources) {
-    merge_one(source)
-  }
-  return target
-};
-
 const is_type_of = (type) => {
   return (thing) => {
     return typeof thing === type
@@ -24,6 +10,23 @@ let is_number = is_type_of('number');
 let is_object_literal = (thing) => {
   let is_object = is_type_of('object');
   return thing && is_object(thing) && !Array.isArray(thing)
+};
+
+const merge_own = (target, ...sources) => {
+  let merge_one = (obj) => {
+    if (!obj) {
+      return
+    }
+    for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        target[key] = obj[key]
+      }
+    }
+  };
+  for (let source of sources) {
+    merge_one(source)
+  }
+  return target
 };
 
 // Invoke each of the specified functions, throwing an error
