@@ -15,7 +15,7 @@ export default {
   ABC({name, proto, klass} = {}) {
     // Verify valid class name, and at least proto or class are
     // objects with valid blueprints, consistent with blueprints.execute().
-    let ok_spec = (name, proto, klass) => {
+    let ok_spec = () => {
       if (!is_string(name)) {
         throw new Error(USAGE)
       } else if (!CLASSNAME_PATTERN.test(name)) {
@@ -27,7 +27,7 @@ export default {
       (proto && is_blueprinted(proto));
     };
 
-    ok_spec(name, proto, klass);
+    ok_spec();
 
     // Some magic to dynamically generate the class name.
     // See http://stackoverflow.com/a/9479081/2419669.
