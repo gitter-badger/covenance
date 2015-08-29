@@ -16,7 +16,7 @@ test('should reject a spec with a non-standard class name', t => {
       ABC({name})
     }, new RegExp(`Expected ${name} to be pseudo-CamelCase\.+`));
   }
-  for (let name of [null, undefined, {}]) {
+  for (let name of [null, undefined, {}, []]) {
     t.throws(() => {
       ABC({name})
     }, /Pass an ABC spec:[\.\n]+/);
@@ -34,7 +34,7 @@ test('should reject a spec with no klass or proto objects', t => {
   t.end()
 });
 
-test('should reject a spec with no klass or proto blueprints', t => {
+test('should reject a spec with invalid klass or proto blueprints', t => {
   let name = 'ExampleName';
   let specs = [
     {
@@ -43,7 +43,12 @@ test('should reject a spec with no klass or proto blueprints', t => {
     },
     {
       name,
-      klass: {}
+      proto: {
+        props: {
+          foo: 1
+        }
+      },
+      klass: {blueprints: null}
     },
     {
       name,
@@ -57,8 +62,26 @@ test('should reject a spec with no klass or proto blueprints', t => {
   for (let spec of specs) {
     t.throws(() => {
       ABC(spec)
-    }, /Expected property 'blueprints' to be a non-empty Array/)
+    }, /Pass an ABC spec:[\.\n]+/)
   }
+  t.end()
+});
+
+test('should accept a spec with at least one specified blueprint', t => {
+  let spec = {
+    name: 'ExampleName',
+    proto: {
+      props: {
+        foo: 1
+      }
+    },
+    klass: {
+      blueprints: blueprints.create(['attribute', is_string])
+    }
+  };
+  t.doesNotThrow(() => {
+    ABC(spec)
+  });
   t.end()
 });
 
@@ -113,7 +136,7 @@ test('should not be implemented_by a non-function', t => {
   let ABC = ExampleABC();
   t.throws(() => {
     ABC.implemented_by(1)
-  }, new RegExp(`${ABC.name} cannot be implemented by a non-function`));
+  }, /Abstract classes can only be implemented by functions$/);
   t.end()
 });
 
@@ -136,7 +159,7 @@ test("should throw when implementation doesn't implement all proto blueprints", 
       }
     }
     ABC.implemented_by(I);
-  }, /'proto2' not found on target$/);
+  }, /Expected 'proto2' to be own property on target$/);
   t.end()
 });
 
@@ -155,7 +178,7 @@ test("should throw when implementation doesn't implement all static blueprints",
       }
     }
     ABC.implemented_by(I);
-  }, /'static1' not found on target$/);
+  }, /Expected 'static1' to be own property on target$/);
   t.end()
 });
 

@@ -14,7 +14,7 @@ frosty.freeze(Blueprint.prototype, 'attribute', 'predicate');
 const USAGE = `
 Expected {attribute: [string], predicate: [function]}, or ([string], [function]).`;
 
-let __construct__ = function() {
+let __make_blueprint__ = function() {
   // use function() to create new arguments scope
   let ok_spec = (attribute, predicate) => {
     if (!is_string(attribute)) {
@@ -24,13 +24,13 @@ let __construct__ = function() {
     }
     return {attribute, predicate}
   };
-  let parse_spec = () => {
+  let parse_spec = (spec) => {
     let attribute, predicate;
-    if (arguments.length === 2) {
-      attribute = arguments[0];
-      predicate = arguments[1];
-    } else if (arguments.length === 1) {
-      let named_spec = arguments[0];
+    if (spec.length === 2) {
+      attribute = spec[0];
+      predicate = spec[1];
+    } else if (spec.length === 1) {
+      let named_spec = spec[0];
       if (!is_object_literal(named_spec)) {
         throw new Error(USAGE)
       } else {
@@ -42,11 +42,13 @@ let __construct__ = function() {
     }
     return [attribute, predicate];
   };
-  return new Blueprint(ok_spec(...parse_spec()))
+  return new Blueprint(ok_spec(...parse_spec(arguments)))
 };
 
 export default {
   blueprint: {
+    // This is the only exported way to create Blueprints.
+    //
     // Returns an immutable Array of Blueprints.
     Blueprints(...specs) {
       if (!specs.length) {
@@ -54,9 +56,9 @@ export default {
       }
       return Object.freeze(specs.map((spec) => {
         if (Array.isArray(spec)) {
-          return __construct__(...spec);
+          return __make_blueprint__(...spec);
         } else if (is_object_literal(spec)) {
-          return __construct__(spec);
+          return __make_blueprint__(spec);
         } else {
           throw new Error(USAGE)
         }

@@ -4,22 +4,23 @@ import {blueprint as Blueprint} from './blueprint';
 
 const BLUEPRINTS_KEY = 'blueprints';
 
-// Verify that the target satisfies the specified Scheme.
+// Verify that the target satisfies the specified blueprints.
 //
 // The properties specified by each Blueprint are not restricted to
-// be own properties by default, this can be overriden by setting
-// own_properties = true.
-let ok_blueprints = (target, blueprints, own_properties = false) => {
+// be own properties by default - this can be overridden by setting
+// own = true.
+let ok_blueprints = (target, blueprints, own = false) => {
   for (let blueprint of blueprints) {
-    if (own_properties) {
+    if (own) {
       if (!target.hasOwnProperty(blueprint.attribute)) {
-        throw new TypeError(`'${blueprint.attribute}' not found on target`)
+        throw new TypeError(`Expected '${blueprint.attribute}' to be own property on target`)
       }
     } else if (!blueprint.predicate(target[blueprint.attribute])) {
       throw new TypeError(
         `'${blueprint.attribute}': '${target[blueprint.attribute]}' failed blueprint check`);
     }
   }
+  return true
 };
 
 // verify that `thing` contains a valid blueprint
@@ -36,6 +37,7 @@ let is_blueprinted = (thing) => {
         `Expected element '${blueprint}' of '${BLUEPRINTS_KEY}' to be a Blueprint`);
     }
   }
+  return true
 };
 
 export default {
