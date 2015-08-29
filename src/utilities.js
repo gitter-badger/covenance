@@ -23,31 +23,45 @@ let is_function = is_type_of('function');
 let is_number = is_type_of('number');
 let is_object_literal = (thing) => {
   let is_object = is_type_of('object');
-  return is_object(thing) && !Array.isArray(thing)
+  return thing && is_object(thing) && !Array.isArray(thing)
 };
 
-const assert_some_fn = (message = '', ...fns) => {
+const assert_one_of = function() {
+  let parse_arguments = () => {
+    let args = Array.prototype.slice.call(arguments);
+    let msg;
+    let fns;
+    if (is_string(args[args.length - 1])) {
+      msg = args.pop();
+    } else {
+      msg = ''
+    }
+    fns = args;
+    return [fns, msg]
+  };
   let ok_fn = (fn) => {
     if (!is_function(fn)) {
       throw new Error(`Expected function for ${fn}`)
     }
   };
+  let [fns, msg] = parse_arguments();
   let fails = 0;
   for (let fn of fns) {
+    ok_fn(fn);
     try {
-      ok_fn(fn) && fn()
+      fn()
     } catch (e) {
       fails++;
     }
   }
   if (fails === fns.length) {
-    throw new Error(message || `All ${fns.length} functions failed`)
+    throw new Error(msg || `All ${fns.length} functions failed`)
   }
 };
 
 export default {
   merge_own,
-  assert_some_fn,
+  assert_one_of,
   is_string,
   is_function,
   is_number,

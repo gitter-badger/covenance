@@ -1,5 +1,5 @@
 import {is_blueprinted, ok_blueprints, BLUEPRINTS_KEY} from './blueprinted'
-import {merge_own, is_string, is_object_literal, is_function, assert_some_fn} from './utilities'
+import {merge_own, is_string, is_object_literal, is_function, assert_one_of} from './utilities'
 
 const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;
 const USAGE = `Pass an ABC spec:
@@ -20,7 +20,6 @@ let __make_ABC__ = (name, proto, klass) => {
         throw new Error("Can't instantiate abstract class")
       }
     };`)();
-
   // Copy the spec (static and proto props and blueprints) into the new ABC.
   merge_own(ABC.prototype, proto.props, {
     [BLUEPRINTS_KEY]: proto[BLUEPRINTS_KEY]
@@ -70,13 +69,20 @@ export default {
       } else if (!is_object_literal(proto) && !is_object_literal(klass)) {
         throw new Error(USAGE)
       }
-      let ok_blueprinted = (thing) => {
+      let is_obj_and_blueprinted = (thing) => {
         return () => {
-          thing && is_blueprinted(thing);
+          if (!thing) {
+            throw new Error()
+          }
+          is_blueprinted(thing);
         }
       };
-      // Pass if at least one of klass or proto is blueprinted.
-      assert_some_fn(USAGE, ok_blueprinted(proto), ok_blueprinted(klass));
+      // Pass if at least one of klass or proto was specified and blueprinted.
+      assert_one_of(
+        is_obj_and_blueprinted(proto),
+        is_obj_and_blueprinted(klass),
+        USAGE
+      );
       return [name, proto, klass]
     };
     return __make_ABC__(...ok_spec(name, proto, klass));
