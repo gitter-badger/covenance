@@ -73,11 +73,29 @@ const appeal = function() {
   }
 };
 
+
+const inherit = (subfn, superfn) => {
+  subfn.prototype = Object.create(superfn.prototype, {
+    constructor: {
+      value: subfn,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (Object.setPrototypeOf) {
+    Object.setPrototypeOf(subfn, superfn);
+  } else {
+    subfn.__proto__ = superfn;
+  }
+};
+
 export default {
-  merge_own,
   appeal,
+  inherit,
   is_string,
   is_function,
   is_number,
-  is_object_literal
+  is_object_literal,
+  merge_own
 }

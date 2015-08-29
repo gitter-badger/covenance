@@ -1,5 +1,12 @@
 import {is_blueprinted, ok_blueprints, BLUEPRINTS_KEY} from './blueprinted'
-import {merge_own, is_string, is_object_literal, is_function, appeal} from './utilities'
+import {
+  merge_own,
+  is_string,
+  is_object_literal,
+  is_function,
+  appeal,
+  inherit
+} from './utilities'
 
 const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;
 const USAGE = `Pass a valid ABC spec:
@@ -11,6 +18,9 @@ const USAGE = `Pass a valid ABC spec:
     }
   }`;
 
+class ABCMeta {}
+Object.freeze(ABCMeta);
+
 let __make_ABC__ = (name, proto = {}, klass = {}) => {
   // Some magic to dynamically generate the class name.
   // See http://stackoverflow.com/a/9479081/2419669.
@@ -20,6 +30,7 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
         throw new Error("Can't instantiate abstract class")
       }
     };`)();
+  inherit(ABC, ABCMeta);
   // Copy the spec (static and proto props and blueprints) into the new ABC.
   merge_own(ABC.prototype, proto.props, {
     [BLUEPRINTS_KEY]: proto[BLUEPRINTS_KEY]
@@ -87,5 +98,7 @@ export default {
       return [name, proto, klass]
     };
     return __make_ABC__(...ok_spec(name, proto, klass));
-  }
+  },
+
+  ABCMeta
 }

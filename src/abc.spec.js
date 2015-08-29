@@ -1,7 +1,7 @@
 import test from 'tape'
 import {is_string, is_function, is_number} from './utilities'
 
-import {ABC} from './abc'
+import {ABC, ABCMeta} from './abc'
 import {blueprints} from './blueprints'
 
 
@@ -131,6 +131,11 @@ test('should have the right name', t => {
   let ExampleName = ExampleABC('ExampleName');
 
   t.equals(ExampleName.name, 'ExampleName');
+  t.end()
+});
+
+test('should be an instanceof ABCMeta', t => {
+  t.ok(ExampleABC().prototype instanceof ABCMeta);
   t.end()
 });
 
