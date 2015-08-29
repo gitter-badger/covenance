@@ -1,118 +1,118 @@
 import test from 'tape'
-import {blueprint} from './blueprint'
+import {blueprint as bp} from './blueprint'
 import {is_string} from './utilities'
 
 
-test('should throw when creating with wrong signature', t => {
+test('should throw when creating with wrong spec', t => {
   t.throws(() => {
-    blueprint.Blueprints()
+    bp.Blueprints()
   }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.throws(() => {
-    blueprint.Blueprints(1, 2, 3)
+    bp.Blueprints(1, 2, 3)
   }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.end()
 });
 
-test('should not throw when creating with right signature', t => {
+test('should not throw when creating with right spec', t => {
   t.doesNotThrow(() => {
-    blueprint.Blueprints({attribute: 'string', predicate: () => {}})
+    bp.Blueprints({attribute: 'string', predicate: () => {}})
   }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.doesNotThrow(() => {
-    blueprint.Blueprints(['string', () => {}])
+    bp.Blueprints(['string', () => {}])
   }, /Expected \{attribute: \[string], predicate: \[function]}, or \(\[string], \[function]\)\.$/);
   t.end()
 });
 
 test('should create Blueprints with positional tuples', t => {
-  let bs = blueprint.Blueprints(
+  let blueprints = bp.Blueprints(
     ['blueprint1', () => {}],
     ['blueprint2', () => {}]
   );
 
-  t.ok(Array.isArray(bs));
-  t.equals(bs.length, 2);
+  t.ok(Array.isArray(blueprints));
+  t.equals(blueprints.length, 2);
 
-  for (let bp of bs) {
-    t.ok(blueprint.is(bp))
+  for (let blueprint of blueprints) {
+    t.ok(bp.is(blueprint))
   }
   t.end()
 });
 
 test('should create Blueprints with positional objects', t => {
-  let bs = blueprint.Blueprints(
+  let blueprints = bp.Blueprints(
     {attribute: 'blueprint1', predicate: () => {}},
     {attribute: 'blueprint2', predicate: () => {}}
   );
 
-  t.ok(Array.isArray(bs));
-  t.equals(bs.length, 2);
+  t.ok(Array.isArray(blueprints));
+  t.equals(blueprints.length, 2);
 
-  for (let bp of bs) {
-    t.ok(blueprint.is(bp))
+  for (let blueprint of blueprints) {
+    t.ok(bp.is(blueprint))
   }
   t.end()
 });
 
 test('should create Blueprints with mixed positional arguments', t => {
-  let bs = blueprint.Blueprints(
+  let blueprints = bp.Blueprints(
     ['blueprint1', () => {}],
     {attribute: 'blueprint2', predicate: () => {}}
   );
 
-  t.ok(Array.isArray(bs));
-  t.equals(bs.length, 2);
+  t.ok(Array.isArray(blueprints));
+  t.equals(blueprints.length, 2);
 
-  for (let bp of bs) {
-    t.ok(blueprint.is(bp))
+  for (let blueprint of blueprints) {
+    t.ok(bp.is(blueprint))
   }
   t.end()
 });
 
 test('should return an immutable Array', t => {
-  let bs = blueprint.Blueprints(
+  let blueprints = bp.Blueprints(
     ['blueprint1', () => {}],
     {attribute: 'blueprint2', predicate: () => {}}
   );
 
-  bs.push(0); // in the Chrome runtime, this will throw
+  blueprints.push(0); // in the Chrome runtime, this will throw
 
-  t.equals(bs.length, 2);
+  t.equals(blueprints.length, 2);
   t.end()
 });
 
 test('should throw when creating with wrong types', t => {
   t.throws(() => {
-    blueprint.Blueprints([{attribute: 1, predicate: () => {}}])
+    bp.Blueprints([{attribute: 1, predicate: () => {}}])
   }, new RegExp(`Expected ${1} to be a string`));
   t.throws(() => {
-    blueprint.Blueprints([{attribute: 'string', predicate: []}])
+    bp.Blueprints([{attribute: 'string', predicate: []}])
   }, new RegExp(`Expected ${[]} to be a function`));
   t.throws(() => {
-    blueprint.Blueprints([1, () => {}])
+    bp.Blueprints([1, () => {}])
   }, new RegExp(`Expected ${1} to be a string`));
   t.throws(() => {
-    blueprint.Blueprints(['string', []])
+    bp.Blueprints(['string', []])
   }, new RegExp(`Expected ${[]} to be a function`));
   t.end();
 });
 
 test('should read properties', t => {
   let [attribute, predicate] = ['foo', is_string];
-  let [bp]= blueprint.Blueprints([{attribute, predicate}]);
+  let [blueprint]= bp.Blueprints([{attribute, predicate}]);
 
-  t.equals(bp.attribute, attribute);
-  t.equals(bp.predicate, predicate);
+  t.equals(blueprint.attribute, attribute);
+  t.equals(blueprint.predicate, predicate);
   t.end()
 });
 
 test('should not set properties again', t => {
-  let [bp] = blueprint.Blueprints([{attribute: 'foo', predicate: () => {}}]);
+  let [blueprint] = bp.Blueprints([{attribute: 'foo', predicate: () => {}}]);
 
   t.throws(() => {
-    bp.attribute = 'bar'
+    blueprint.attribute = 'bar'
   }, /attribute is immutable/);
   t.throws(() => {
-    bp.predicate = () => {}
+    blueprint.predicate = () => {}
   }, /predicate is immutable/);
   t.end()
 });
