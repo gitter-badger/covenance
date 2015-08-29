@@ -2,7 +2,7 @@
   "name": "blueprint",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/blueprint.js",
+  "main": "dist/blueprints.js",
   "scripts": {
     "test": "./test.js ./**/*.spec.js | node_modules/.bin/faucet"
   },
