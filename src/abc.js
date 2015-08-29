@@ -1,4 +1,4 @@
-import {assert_has_blueprints, ok_blueprints, BLUEPRINTS_KEY} from './mixin'
+import {assert_has_blueprints, ok_blueprints, BLUEPRINTS_KEY} from './validates_blueprints'
 import {merge_own, is_string, is_object_literal, is_function} from './utilities'
 
 const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;

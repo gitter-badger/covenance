@@ -1,6 +1,6 @@
 import mixin_a_lot from 'mixin-a-lot';
 import Scheme from './scheme';
-import {validates_blueprints, BLUEPRINTS_KEY} from './mixin'
+import {validates_blueprints, BLUEPRINTS_KEY} from './validates_blueprints'
 import {merge_own, is_function} from './utilities'
 
 
