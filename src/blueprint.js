@@ -20,11 +20,11 @@ let blueprint = {
         premix: options.before_blueprint,
         postmix: options.after_blueprint
       });
-      if (is_function(options.before_blueprint_check)) {
-        options.before_hook = {blueprint_check: options.before_blueprint_check}
+      if (is_function(options.before_ok_blueprints)) {
+        options.before_hook = {ok_blueprints: options.before_ok_blueprints}
       }
-      if (is_function(options.after_blueprint_check)) {
-        options.after_hook = {blueprint_check: options.after_blueprint_check}
+      if (is_function(options.after_ok_blueprints)) {
+        options.after_hook = {ok_blueprints: options.after_ok_blueprints}
       }
       return options
     };

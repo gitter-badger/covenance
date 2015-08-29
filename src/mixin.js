@@ -2,7 +2,7 @@ import mixin_a_lot from 'mixin-a-lot';
 import Scheme from './scheme';
 
 
-let blueprint_check = (target, blueprints, own_properties = false) => {
+let ok_blueprints = (target, blueprints, own_properties = false) => {
   for (let scheme of blueprints) {
     if (own_properties && !target.hasOwnProperty(scheme.attribute)) {
       throw new TypeError(`'${scheme.attribute}' not found on target`)
@@ -30,18 +30,17 @@ let assert_has_blueprints = (thing) => {
 const BLUEPRINTS_KEY = 'blueprints';
 const validates_blueprints = mixin_a_lot.make_mixin({
 
-  name: 'blueprinted',
+  name: 'validates_blueprints',
 
   // Anything that acts as a blueprint must have a blueprints property.
   premix() {
     assert_has_blueprints(this);
   },
 
-  blueprint_check() {
-    blueprint_check(this, this[BLUEPRINTS_KEY]);
-
+  ok_blueprints() {
+    ok_blueprints(this, this[BLUEPRINTS_KEY]);
     // return the instance/class/prototype so that
-    // after_blueprint_check hook can consume it
+    // after_ok_blueprints hook can consume it
     return this
   }
 
@@ -50,6 +49,6 @@ const validates_blueprints = mixin_a_lot.make_mixin({
 export default {
   validates_blueprints,
   BLUEPRINTS_KEY,
-  blueprint_check,
+  ok_blueprints,
   assert_has_blueprints
 }

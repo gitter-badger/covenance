@@ -79,7 +79,7 @@ test('should add a blueprint checking method on the prototype', t => {
 
   blueprint.execute(Example);
 
-  t.ok(is_function(Example.prototype.blueprint_check));
+  t.ok(is_function(Example.prototype.ok_blueprints));
   t.end()
 });
 
@@ -96,7 +96,7 @@ test('should add a blueprint checking method on the class', t => {
 
   blueprint.execute(Example);
 
-  t.ok(is_function(Example.blueprint_check));
+  t.ok(is_function(Example.ok_blueprints));
   t.end()
 });
 
@@ -105,7 +105,7 @@ test('should check instance blueprints', t => {
     constructor(x, y) {
       this.x = x;
       this.y = y;
-      this.blueprint_check()
+      this.ok_blueprints()
     }
 
     get blueprints() {
@@ -140,11 +140,11 @@ test('should check static blueprints', t => {
 
   t.throws(() => {
     Example.foo = true;
-    Example.blueprint_check()
+    Example.ok_blueprints()
   }, /^TypeError: 'foo': 'true' failed blueprint check$/);
   t.throws(() => {
     delete Example.foo;
-    Example.blueprint_check()
+    Example.ok_blueprints()
   }, /^TypeError: 'foo': 'undefined' failed blueprint check$/);
   t.end()
 });
@@ -190,14 +190,14 @@ test('should support "before blueprint check" hook on static blueprints', t => {
     }
   }
   blueprint.execute(Example, {
-    before_blueprint_check() {
+    before_ok_blueprints() {
       t.is(this, Example);
       this.foo = 'name'
     }
   });
 
   t.doesNotThrow(() => {
-    Example.blueprint_check()
+    Example.ok_blueprints()
   });
   t.equals(Example.foo, 'name');
   t.end()
@@ -210,7 +210,7 @@ test('should support "before blueprint check" hook on proto blueprints', t => {
     }
   }
   blueprint.execute(Example, {
-    before_blueprint_check() {
+    before_ok_blueprints() {
       // 'this' is the prototype; see:
       //
       //    https://github.com/yangmillstheory/mixin.a.lot#-mix-options--mixin-method-hooks
@@ -222,7 +222,7 @@ test('should support "before blueprint check" hook on proto blueprints', t => {
   let e = new Example();
 
   t.doesNotThrow(() => {
-    e.blueprint_check()
+    e.ok_blueprints()
   });
   t.equals(e.foo, 'foo');
   t.end()
@@ -235,14 +235,14 @@ test('should have static blueprint check "after hook" that returns the class', t
     }
   }
   blueprint.execute(Example, {
-    after_blueprint_check(klass) {
+    after_ok_blueprints(klass) {
       t.is(klass, Example);
       t.is(this, Example);
       this.foo = 'after_foo'
     }
   });
   Example.foo = 'before_foo';
-  Example.blueprint_check();
+  Example.ok_blueprints();
 
   t.equals(Example.foo, 'after_foo');
   t.end()
@@ -259,7 +259,7 @@ test('should have prototype blueprint check "after hook" that returns the instan
   let f = new Example();
 
   blueprint.execute(Example, {
-    after_blueprint_check(instance) {
+    after_ok_blueprints(instance) {
       // You can use the instance, or 'this', which is Example.prototype.
       t.is(instance, f);
       t.is(this, Example.prototype);
@@ -270,7 +270,7 @@ test('should have prototype blueprint check "after hook" that returns the instan
 
   f.foo ='before_foo';
 
-  f.blueprint_check();
+  f.ok_blueprints();
 
   t.equals(f.foo, 'after_foo');
   t.end()
@@ -297,7 +297,7 @@ test('should work with a mix of prototype and static blueprints', t => {
   let f = new Example();
 
   blueprint.execute(Example, {
-    after_blueprint_check(instance) {
+    after_ok_blueprints(instance) {
       if (instance === Example) {
         this.static_foo1 = 'you win!'
       } else {
@@ -313,7 +313,7 @@ test('should work with a mix of prototype and static blueprints', t => {
     f.proto_foo1 = 'string';
     f.proto_foo2 = 1;
 
-    Example.blueprint_check()
+    Example.ok_blueprints()
   }, /^TypeError: 'static_foo2': 'string' failed blueprint check$/);
 
   t.throws(() => {
@@ -323,7 +323,7 @@ test('should work with a mix of prototype and static blueprints', t => {
     f.proto_foo1 = [];
     f.proto_foo2 = 1;
 
-    f.blueprint_check()
+    f.ok_blueprints()
   }, /^TypeError: 'proto_foo1': .+ failed blueprint check$/);
 
   Example.static_foo1 = 'string';
@@ -333,8 +333,8 @@ test('should work with a mix of prototype and static blueprints', t => {
   f.proto_foo2 = 1;
 
   t.doesNotThrow(() => {
-    f.blueprint_check();
-    Example.blueprint_check();
+    f.ok_blueprints();
+    Example.ok_blueprints();
   });
 
   t.equals(f.proto_foo1, 'you win!');

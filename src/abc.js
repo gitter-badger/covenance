@@ -1,4 +1,4 @@
-import {assert_has_blueprints, blueprint_check, BLUEPRINTS_KEY} from './mixin'
+import {assert_has_blueprints, ok_blueprints, BLUEPRINTS_KEY} from './mixin'
 import {merge_own, is_string, is_object_literal, is_function} from './utilities'
 
 const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;
@@ -33,14 +33,13 @@ export default {
         throw new Error(`Abstract class ${name} can only be implemented by functions`)
       }
       if (abc.prototype[BLUEPRINTS_KEY]) {
-        blueprint_check(fn.prototype, abc.prototype[BLUEPRINTS_KEY], true)
+        ok_blueprints(fn.prototype, abc.prototype[BLUEPRINTS_KEY], true)
       }
       if (abc[BLUEPRINTS_KEY]) {
-        blueprint_check(fn, abc[BLUEPRINTS_KEY], true)
+        ok_blueprints(fn, abc[BLUEPRINTS_KEY], true)
       }
       return fn
     };
-    abc.implementedBy = abc.implemented_by;
     if (proto) {
       merge_own(abc.prototype, proto.props);
       if (proto[BLUEPRINTS_KEY]) {
