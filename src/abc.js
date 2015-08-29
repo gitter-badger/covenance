@@ -2,7 +2,7 @@ import {is_blueprinted, ok_blueprints, BLUEPRINTS_KEY} from './blueprinted'
 import {merge_own, is_string, is_object_literal, is_function, appeal} from './utilities'
 
 const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;
-const USAGE = `Pass an ABC spec:
+const USAGE = `Pass a valid ABC spec:
   {
     name: [String],
     (proto,klass): {

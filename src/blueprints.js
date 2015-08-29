@@ -14,31 +14,48 @@ const EXECUTE_ALIASES = [
 
 let blueprints = {
   [EXECUTE_PROPERTY](fn, options = {}) {
+    let ok_fn = () => {
+      if (!is_function(fn)) {
+        throw new Error(`Expected function type to blueprint, got ${fn}`)
+      }
+      if (!fn.prototype[BLUEPRINTS_KEY] && !fn[BLUEPRINTS_KEY]) {
+        throw new Error('Found no static or prototype blueprints.')
+      }
+    };
     // glue blueprint-specific options back to mixin-a-lot
-    let parsed_options = () => {
-      options = merge_own(options, {
-        premix: options.before_blueprint,
-        postmix: options.after_blueprint
+    //
+    // modifies original options
+    let clean_options = () => {
+      let {
+        pre_blueprint,
+        post_blueprint,
+        pre_ok_blueprints,
+        post_ok_blueprints
+      } = options;
+      let hook = (hookspec) => {
+        if (is_function(hookspec)) {
+          return {ok_blueprints: hookspec};
+        }
+        return undefined
+      };
+      merge_own(options,
+      {
+        premix: pre_blueprint,
+        postmix: post_blueprint
+      },
+      {
+        before_hook: hook(pre_ok_blueprints),
+        after_hook: hook(post_ok_blueprints)
       });
-      if (is_function(options.before_ok_blueprints)) {
-        options.before_hook = {ok_blueprints: options.before_ok_blueprints}
-      }
-      if (is_function(options.after_ok_blueprints)) {
-        options.after_hook = {ok_blueprints: options.after_ok_blueprints}
-      }
       return options
     };
-    if (!is_function(fn)) {
-      throw new Error(`Expected function type to blueprint, got ${fn}`)
-    }
+    ok_fn();
+    let mix_options = clean_options();
     if (fn.prototype[BLUEPRINTS_KEY]) {
-      mixin_a_lot.mix(fn.prototype, blueprinted, parsed_options());
+      mixin_a_lot.mix(fn.prototype, blueprinted, mix_options);
     }
     if (fn[BLUEPRINTS_KEY]) {
-      mixin_a_lot.mix(fn, blueprinted, parsed_options());
-    }
-    if (!fn.prototype[BLUEPRINTS_KEY] && !fn[BLUEPRINTS_KEY]) {
-      throw new Error('Found no static or prototype blueprints.')
+      mixin_a_lot.mix(fn, blueprinted, mix_options);
     }
   },
 

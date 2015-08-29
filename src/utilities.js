@@ -12,6 +12,7 @@ let is_object_literal = (thing) => {
   return thing && is_object(thing) && !Array.isArray(thing)
 };
 
+// Merges own undefined keys from sources into sources.
 const merge_own = (target, ...sources) => {
   let merge_one = (obj) => {
     if (!obj) {
@@ -19,7 +20,9 @@ const merge_own = (target, ...sources) => {
     }
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
-        target[key] = obj[key]
+        if (obj[key] !== undefined) {
+          target[key] = obj[key]
+        }
       }
     }
   };

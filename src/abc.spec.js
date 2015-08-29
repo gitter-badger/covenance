@@ -6,7 +6,7 @@ import {blueprints} from './blueprints'
 
 
 test('should reject a spec without a class name', t => {
-  t.throws(ABC, /Pass an ABC spec:[\.\n]+/);
+  t.throws(ABC, /Pass a valid ABC spec:[\.\n]+/);
   t.end()
 });
 
@@ -19,7 +19,7 @@ test('should reject a spec with a non-standard class name', t => {
   for (let name of [null, undefined, {}, []]) {
     t.throws(() => {
       ABC({name})
-    }, /Pass an ABC spec:[\.\n]+/);
+    }, /Pass a valid ABC spec:[\.\n]+/);
   }
   t.end()
 });
@@ -29,7 +29,7 @@ test('should reject a spec with no klass or proto objects', t => {
   for (let spec of [{name}, {name, proto: []}, {name, klass: 1}]) {
     t.throws(() => {
       ABC(spec)
-    }, /Pass an ABC spec:[\.\n]+/)
+    }, /Pass a valid ABC spec:[\.\n]+/)
   }
   t.end()
 });
@@ -37,11 +37,11 @@ test('should reject a spec with no klass or proto objects', t => {
 test('should reject a spec with invalid klass or proto blueprints', t => {
   let name = 'ExampleName';
   let specs = [
-    {
+    { // no blueprints at all
       name,
       proto: {}
     },
-    {
+    { // null blueprints on klass, none on proto
       name,
       proto: {
         props: {
@@ -50,11 +50,11 @@ test('should reject a spec with invalid klass or proto blueprints', t => {
       },
       klass: {blueprints: null}
     },
-    {
+    { // invalid blueprints on proto, none on klass
       name,
       proto: {blueprints: 1}
     },
-    {
+    { // null blueprints on klass, none on proto
       name,
       klass: {blueprints: []}
     }
@@ -62,12 +62,12 @@ test('should reject a spec with invalid klass or proto blueprints', t => {
   for (let spec of specs) {
     t.throws(() => {
       ABC(spec)
-    }, /Pass an ABC spec:[\.\n]+/)
+    }, /Pass a valid ABC spec:[\.\n]+/)
   }
   t.end()
 });
 
-test('should accept a spec with at least one specified blueprint', t => {
+test('should accept a spec with at least one valid blueprint', t => {
   let spec = {
     name: 'ExampleName',
     proto: {
@@ -86,6 +86,11 @@ test('should accept a spec with at least one specified blueprint', t => {
 });
 
 
+// Creates an Example ABC with:
+//
+//  - two proto specs with two abstract implementations
+//  - two class specs with one abstract implementation
+//
 const ExampleABC = (name = 'ExampleABC') => {
   return ABC({
     name,
@@ -107,28 +112,25 @@ const ExampleABC = (name = 'ExampleABC') => {
         ['static2', is_function]
       ),
       props: {
-        static1: 1,
-        static2() {
-          throw new Error('static2 not implemented')
-        }
+        static1: 999
       }
     }
   });
 };
 
+test('should not be instantiable', t => {
+  let ABC = ExampleABC();
+
+  t.throws(() => {
+    new ABC()
+  }, /Can't instantiate abstract class$/);
+  t.end()
+});
+
 test('should have the right name', t => {
   let ExampleName = ExampleABC('ExampleName');
 
   t.equals(ExampleName.name, 'ExampleName');
-  t.end()
-});
-
-test('should not be implemented_by a non-subclass', t => {
-  let ABC = ExampleABC();
-  class NotASubclass {}
-  t.throws(() => {
-    ABC.implemented_by(NotASubclass)
-  }, new RegExp(`${NotASubclass.name} is not a subclass of ${ABC.name}`));
   t.end()
 });
 
@@ -140,12 +142,12 @@ test('should not be implemented_by a non-function', t => {
   t.end()
 });
 
-test('should throw an error when instantiated from the abstract base class', t => {
+test('should not be implemented_by a non-subclass', t => {
   let ABC = ExampleABC();
-
+  class NotASubclass {}
   t.throws(() => {
-    new ABC()
-  }, /Can't instantiate abstract class$/);
+    ABC.implemented_by(NotASubclass)
+  }, new RegExp(`${NotASubclass.name} is not a subclass of ${ABC.name}`));
   t.end()
 });
 
@@ -228,7 +230,7 @@ test('should allow an implementation to invoke base abstract methods/properties'
 
   // Test calling up to the base class
   t.equals(i.proto2(), 'proto2');
-  t.equals(I.static1, 1001);
+  t.equals(I.static1, 1999);
 
   // Test own properties
   t.equals(i.proto1, 'I_proto1');
