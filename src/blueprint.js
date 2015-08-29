@@ -3,44 +3,44 @@ import frosty from 'frosty'
 
 
 class Blueprint {
-  constructor({attribute, predicate}) {
+  constructor({attribute, validator}) {
     this.attribute = attribute;
-    this.predicate = predicate;
+    this.validator = validator;
   }
 }
 
-frosty.freeze(Blueprint.prototype, 'attribute', 'predicate');
+frosty.freeze(Blueprint.prototype, 'attribute', 'validator');
 
 const USAGE = `
-Expected {attribute: [string], predicate: [function]}, or ([string], [function]).`;
+Expected {attribute: [string], validator: [function]}, or ([string], [function]).`;
 
 let __make_blueprint__ = function() {
   // use function() to create new arguments scope
-  let ok_spec = (attribute, predicate) => {
+  let ok_spec = (attribute, validator) => {
     if (!is_string(attribute)) {
       throw new Error(`Expected ${attribute} to be a string`)
-    } else if (!is_function(predicate)) {
-      throw new Error(`Expected ${predicate} to be a function`)
+    } else if (!is_function(validator)) {
+      throw new Error(`Expected ${validator} to be a function`)
     }
-    return {attribute, predicate}
+    return {attribute, validator}
   };
   let parse_spec = (spec) => {
-    let attribute, predicate;
+    let attribute, validator;
     if (spec.length === 2) {
       attribute = spec[0];
-      predicate = spec[1];
+      validator = spec[1];
     } else if (spec.length === 1) {
       let named_spec = spec[0];
       if (!is_object_literal(named_spec)) {
         throw new Error(USAGE)
       } else {
         attribute = named_spec.attribute;
-        predicate = named_spec.predicate;
+        validator = named_spec.validator;
       }
     } else {
       throw new Error(USAGE)
     }
-    return [attribute, predicate];
+    return [attribute, validator];
   };
   return new Blueprint(ok_spec(...parse_spec(arguments)))
 };

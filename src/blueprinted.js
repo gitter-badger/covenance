@@ -15,7 +15,7 @@ let ok_blueprints = (target, blueprints, own = false) => {
       if (!target.hasOwnProperty(blueprint.attribute)) {
         throw new TypeError(`Expected '${blueprint.attribute}' to be own property on target`)
       }
-    } else if (!blueprint.predicate(target[blueprint.attribute])) {
+    } else if (!blueprint.validator(target[blueprint.attribute])) {
       throw new TypeError(
         `'${blueprint.attribute}': '${target[blueprint.attribute]}' failed blueprint check`);
     }
