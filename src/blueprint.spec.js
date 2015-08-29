@@ -76,6 +76,7 @@ test('should return an immutable Array', t => {
 
   try {
     blueprints.push(0); // in some engines, this will throw
+  } catch (e) {
   } finally {
     t.equals(blueprints.length, 2);
     t.end()
