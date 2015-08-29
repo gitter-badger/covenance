@@ -31,40 +31,49 @@ export default {
 
     // Some magic to dynamically generate the class name.
     // See http://stackoverflow.com/a/9479081/2419669.
-    let abc = new Function(`
+    let ABC = new Function(`
       return function ${name}() {
         if (this.constructor === ${name}) {
           throw new Error("Can't instantiate abstract class")
         }
       };`)();
+
     // Copy the spec (props and blueprints) into the newly generated ABC.
     if (proto) {
-      merge_own(abc.prototype, proto.props);
+      merge_own(ABC.prototype, proto.props);
       if (proto[BLUEPRINTS_KEY]) {
-        abc.prototype[BLUEPRINTS_KEY] = proto[BLUEPRINTS_KEY];
+        ABC.prototype[BLUEPRINTS_KEY] = proto[BLUEPRINTS_KEY];
       }
     }
     if (klass) {
-      merge_own(abc, klass.props);
+      merge_own(ABC, klass.props);
       if (klass[BLUEPRINTS_KEY]) {
-        abc[BLUEPRINTS_KEY] = klass[BLUEPRINTS_KEY];
+        ABC[BLUEPRINTS_KEY] = klass[BLUEPRINTS_KEY];
       }
     }
-    return merge_own(abc, {
-      // check that a subclass satisfies the abstract contracts
+    return merge_own(ABC, {
+      // Check that a subclass satisfies the abstract contracts.
+      // Call this with the subclass whenever you subclass an ABC.
       implemented_by(fn) {
-        if (!is_function(fn)) {
-          throw new Error(`Abstract class ${name} cannot be implemented by a non-function`)
-        } else if (!(fn.prototype instanceof this)) {
-          throw new Error(`${fn.name} is not a subclass of ${name}`)
+        let ok_fn = () => {
+          if (!is_function(fn)) {
+            throw new Error(`Abstract class ${name} cannot be implemented by a non-function`)
+          } else if (!(fn.prototype instanceof this)) {
+            throw new Error(`${fn.name} is not a subclass of ${name}`)
+          }
+        };
+
+        ok_fn();
+
+        // Verify the ABC contracts.
+        //
+        // The own_properties flag should be true; we want to ignore
+        // the blueprint props specified in the ABC when validating the subclass.
+        if (ABC.prototype[BLUEPRINTS_KEY]) {
+          ok_blueprints(fn.prototype, ABC.prototype[BLUEPRINTS_KEY], true)
         }
-        // own_properties flag should be true; we want to ignore
-        // the blueprint props specified in the abc when validating
-        if (abc.prototype[BLUEPRINTS_KEY]) {
-          ok_blueprints(fn.prototype, abc.prototype[BLUEPRINTS_KEY], true)
-        }
-        if (abc[BLUEPRINTS_KEY]) {
-          ok_blueprints(fn, abc[BLUEPRINTS_KEY], true)
+        if (ABC[BLUEPRINTS_KEY]) {
+          ok_blueprints(fn, ABC[BLUEPRINTS_KEY], true)
         }
         return fn
       }
