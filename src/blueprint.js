@@ -1,4 +1,4 @@
-import {merge_own, is_object_literal} from './utilities'
+import {merge_own, is_object_literal, is_string, is_function} from './utilities'
 import frosty from 'frosty'
 
 
@@ -16,9 +16,9 @@ Expected {attribute: [string], predicate: [function]}, or ([string], [function])
 
 let __construct__ = function() { // use function() to create new arguments scope
   let ok_spec = (attribute, predicate) => {
-    if (typeof attribute !== 'string') {
+    if (!is_string(attribute)) {
       throw new Error(`Expected ${attribute} to be a string`)
-    } else if (typeof predicate !== 'function') {
+    } else if (!is_function(predicate)) {
       throw new Error(`Expected ${predicate} to be a function`)
     }
     return {attribute, predicate}
