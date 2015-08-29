@@ -14,7 +14,8 @@ frosty.freeze(Blueprint.prototype, 'attribute', 'predicate');
 const USAGE = `
 Expected {attribute: [string], predicate: [function]}, or ([string], [function]).`;
 
-let __construct__ = function() { // use function() to create new arguments scope
+let __construct__ = function() {
+  // use function() to create new arguments scope
   let ok_spec = (attribute, predicate) => {
     if (!is_string(attribute)) {
       throw new Error(`Expected ${attribute} to be a string`)
@@ -41,7 +42,7 @@ let __construct__ = function() { // use function() to create new arguments scope
     }
     return [attribute, predicate];
   };
-  return new Blueprint(ok_spec(...parse_spec(...arguments)))
+  return new Blueprint(ok_spec(...parse_spec()))
 };
 
 export default {
