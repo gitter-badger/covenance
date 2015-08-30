@@ -110,6 +110,71 @@ The only difference is `this` in the hook body will point to the function.
  
 ### `blueprints.ABC(...)`
 
+Create an *abstract base class*.
+    
+    import {blueprints} from 'blueprint'
+    import {is_string, is_function, is_number} from './utilities'
+
+    let MyABC = blueprints.ABC({
+      ABC({
+        name: 'MyABC',
+        proto: {
+          blueprints: blueprints.create(
+            ['proto1', is_string],
+            ['proto2', is_function]
+          ),
+          // optional abstract implementations, subclasses can call up
+          props: {
+            proto1: 'proto1',
+            proto2() {
+              return 'proto2'
+            }
+          }
+        },
+        klass: {
+          blueprints: blueprints.create(
+            ['static1', is_number],
+            ['static2', is_function]
+          ),
+          // optional abstract implementations, subclasses can call up
+          props: {
+            static1: 999
+          }
+        }
+      });
+      
+      
+      MyABC.name  // 'MyABC'
+      new MyABC() // Error - can't instantiate abstract class
+      
+Implement the ABC and register the implementation. 
+
+    class Impl extends MyABC {
+      get proto1() {
+        return `Impl_proto1_${this._proto1}`'
+      }
+      proto2() {
+        return super.proto2()
+      }
+      static get static1() {
+        return super.static1 + 1000
+      }
+      static static2() {
+        return 'Impl_static2'
+      }
+    }
+    
+    // removing any of the properties above or
+    // not extending ABC will cause this to throw
+    //
+    // this verifies that Impl satisfies the blueprint specifications
+    ABC.implemented_by(Impl)
+    
+Only subclasses of an ABC can implement the ABC, and they must satisfy the 
+prototype and/or class blueprints, even if the base class provides abstract implementations.
+
+Implementations can of course utilize the base class implementations.
+
 ## API
 
 
