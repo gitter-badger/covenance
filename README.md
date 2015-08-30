@@ -69,7 +69,7 @@ Blueprint a class:
     
     new Point(1, 'string') // throws "'y': 'string' failed blueprint check"
     
-Pre/post blueprinting hooks fire if `blueprints` exist on prototype.
+<a name="execute-hooks">Pre/post blueprinting hooks fire if `blueprints` exist on prototype.</a>
  
 In the hook body, `this` is the prototype.
 
@@ -102,13 +102,13 @@ In the hook body, `this` is the prototype.
       }
     })
 
-Static blueprints can be specified simultaneously and accept the same hooks.
+**Static blueprints can be specified simultaneously and accept the same hooks.**
 
 Each hook will be invoked with each context (prototype or function) that has `blueprints`.
 
 The only difference is `this` in the hook body will point to the function.
  
-### `blueprints.ABC(...)`
+### <a name='abc'></a> `blueprints.ABC(...)`
 
 Create an *abstract base class*.
     
@@ -173,10 +173,76 @@ Implement the ABC and register the implementation.
 Only subclasses of an ABC can implement the ABC, and they must satisfy the 
 prototype and/or class blueprints, even if the base class provides abstract implementations.
 
-Implementations can of course utilize the base class implementations.
+Of course, implementations can utilize the base class implementations.
 
 ## API
 
+### `blueprints.create(...)`
+
+Create an immutable `Array` of `Blueprints` for blueprinting classes. 
+
+Each positional argument can either be an object `{attribute: [String], validator: [Function]}` or a
+tuple `[[String] attribute, [Function] validator]`.
+
+### `blueprints.execute(Function fn, [Object options])`
+
+Register `Blueprints` on a function `fn`. `fn` must have `blueprints` defined on itself
+or its prototype. 
+
+Adds an [`ok_blueprints()`](#ok-blueprints) method to `fn`.
+
+Options can be an object with keys `pre_blueprint` and/or `post_blueprint` mapping 
+to functions, [as discussed above](#execute-hooks).
+
+### <a name='ok-blueprints'></a> `blueprinted_fn.ok_blueprints()`
+
+Validates that the blueprint specification given in `blueprints` are satisfied in `blueprinted_fn`
+and/or `blueprinted_fn.prototype`.
+
+Options can be an object with keys `pre_ok_blueprints` and/or `post_ok_blueprints` mapping 
+to functions, [as discussed above](#execute-hooks).
 
 
+### `blueprints.ABC(Object spec)`
 
+Return a subclass of `ABCMeta` with the provided spec, which should include a `name`
+mapping to a `String`, and either a `proto` object or `klass` object with a `blueprints`
+key mapping to an `Array` of `Blueprints`.
+
+`proto` and/or `klass` can each contain a `props` object that will be copied into 
+the prototype of the resulting ABC's prototype and/or ABC.
+ 
+The returned function will also have a method [`implemented_by`](#implemented-by). 
+
+### <a name='implemented-by'></a> `{ABCMeta MyABC}.implemented_by(Function fn)`
+
+Call this whenever implement an `ABCMeta` to ensure that the contract specified by the `ABCMeta` is satisified.
+ 
+It has no side effects besides throwing errors in case your implementation isn't valid.
+
+**See the [tests](https://github.com/yangmillstheory/blueprint/blob/master/src/abc.spec.js), 
+and the [discussion above](#abc) for more detail.**
+
+## Contributing
+
+**Development is in `snake_case` ES6.**
+
+Get the source.
+
+    $ git clone git@github.com:yangmillstheory/blueprint
+
+Install dependencies.
+    
+    $ npm install
+    
+Compile sources.
+
+    $ node_modules/.bin/gulp build
+    
+Run tests.
+
+    $ npm test
+
+## License
+
+MIT © 2015, Victor Alvarez
