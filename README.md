@@ -86,7 +86,7 @@ In the hook body, `this` is the prototype and/or function.
       }
     })
 
-Pre/post blueprint validation hooks fire before/after an `ok_blueprints` invocation. 
+<a name='ok-blueprints-hooks'>Pre/post blueprint validation hooks fire before/after an `ok_blueprints` invocation.</a> 
 
 In the hook body, `this` is the prototype and/or function.
 
@@ -199,7 +199,7 @@ Validates that the blueprint specification given in `blueprints` are satisfied i
 and/or `blueprinted_fn.prototype`.
 
 Options can be an object with keys `pre_ok_blueprints` and/or `post_ok_blueprints` mapping 
-to functions, [as discussed above](#execute-hooks).
+to functions, [as discussed above](#ok-blueprints-hooks).
 
 
 ### blueprints.ABC(Object spec)
