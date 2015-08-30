@@ -209,7 +209,7 @@ mapping to a `String`, and either a `proto` object or `klass` object with a `blu
 key mapping to an `Array` of `Blueprints`.
 
 `proto` and/or `klass` can each contain a `props` object that will be copied into 
-the prototype of the resulting ABC's prototype and/or ABC.
+the prototype of the resulting ABC and/or its prototype.
  
 The returned function will also have a method [`implemented_by`](#implemented-by). 
 
