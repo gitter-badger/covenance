@@ -75,13 +75,13 @@ In the hook body, `this` is the prototype.
 
     blueprints.execute(Point, {
       pre_blueprint() {
-        // fires before blueprints validation
+        // fires before blueprints property validation in .execute()
       }
     })
     
     blueprints.execute(Point, {
       post_blueprint() {
-        // fires after blueprints validation
+        // fires after blueprints property validation in .execute()
         // this is the prototype or function
       }
     })
