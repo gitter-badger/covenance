@@ -69,9 +69,9 @@ Blueprint a class:
     
     new Point(1, 'string') // throws "'y': 'string' failed blueprint check"
     
-<a name="execute-hooks">Pre/post blueprinting hooks fire if `blueprints` exist on prototype.</a>
+<a name="execute-hooks">Pre/post blueprinting hooks fire if `blueprints` exist on prototype and/or function.</a>
  
-In the hook body, `this` is the prototype.
+In the hook body, `this` is the prototype and/or function.
 
     blueprints.execute(Point, {
       pre_blueprint() {
@@ -82,13 +82,13 @@ In the hook body, `this` is the prototype.
     blueprints.execute(Point, {
       post_blueprint() {
         // fires after blueprints property validation in .execute()
-        // this is the prototype or function
+        // 'this' is the prototype or function
       }
     })
 
 Pre/post blueprint validation hooks fire before/after an `ok_blueprints` invocation. 
 
-In the hook body, `this` is the prototype.
+In the hook body, `this` is the prototype and/or function.
 
     blueprints.execute(Point, {
       pre_ok_blueprints() {
