@@ -38,11 +38,11 @@ of the immutable type `ABCMeta`.
     
 ## Usage
 
-### `blueprints.execute()`
-
 Import the module:
 
     import {blueprints} from 'blueprint'
+
+### `blueprints.execute()`
     
 Blueprint a class:
 
@@ -112,7 +112,6 @@ The only difference is `this` in the hook body will point to the function.
 
 Create an *abstract base class*.
     
-    import {blueprints} from 'blueprint'
     import {is_string, is_function, is_number} from './utilities'
 
     let MyABC = blueprints.ABC({
