@@ -211,7 +211,7 @@ key mapping to an `Array` of `Blueprints`.
 `proto` and/or `klass` can each contain a `props` object that will be copied into 
 the prototype of the resulting ABC and/or its prototype.
  
-The returned function will also have a method [`implemented_by`](#implemented-by). 
+The returned function will also have a method [implemented_by](#implemented-by). 
 
 ### <a name='implemented-by'></a> {ABCMeta MyABC}.implemented_by(Function fn)
 
