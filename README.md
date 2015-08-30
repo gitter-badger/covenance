@@ -102,11 +102,11 @@ In the hook body, `this` is the prototype and/or function.
       }
     })
 
-**Static blueprints can be specified simultaneously and accept the same hooks.**
+**Blueprints can be specified on the prototype and function simultaneously, the hook API is the same.**
 
-Each hook will be invoked with each context (prototype or function) that has `blueprints`.
+**Each hook will be invoked on each context (prototype or function) that has `blueprints`.**
 
-The only difference is `this` in the hook body will point to the function.
+**In hooks `this` will point to either the prototype or function.**
  
 ### <a name='abc'></a> `blueprints.ABC(...)`
 
