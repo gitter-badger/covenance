@@ -176,14 +176,14 @@ Of course, implementations can utilize the base class implementations.
 
 ## API
 
-### `blueprints.create(...)`
+### blueprints.create(...)
 
 Create an immutable `Array` of `Blueprints` for blueprinting classes. 
 
 Each positional argument can either be an object `{attribute: [String], validator: [Function]}` or a
 tuple `[[String] attribute, [Function] validator]`.
 
-### `blueprints.execute(Function fn, [Object options])`
+### blueprints.execute(Function fn, [Object options])
 
 Register `Blueprints` on a function `fn`. `fn` must have `blueprints` defined on itself
 or its prototype. 
@@ -193,7 +193,7 @@ Adds an [`ok_blueprints()`](#ok-blueprints) method to `fn`.
 Options can be an object with keys `pre_blueprint` and/or `post_blueprint` mapping 
 to functions, [as discussed above](#execute-hooks).
 
-### <a name='ok-blueprints'></a> `blueprinted_fn.ok_blueprints()`
+### <a name='ok-blueprints'></a> blueprinted_fn.ok_blueprints()
 
 Validates that the blueprint specification given in `blueprints` are satisfied in `blueprinted_fn`
 and/or `blueprinted_fn.prototype`.
@@ -202,7 +202,7 @@ Options can be an object with keys `pre_ok_blueprints` and/or `post_ok_blueprint
 to functions, [as discussed above](#execute-hooks).
 
 
-### `blueprints.ABC(Object spec)`
+### blueprints.ABC(Object spec)
 
 Return a subclass of `ABCMeta` with the provided spec, which should include a `name`
 mapping to a `String`, and either a `proto` object or `klass` object with a `blueprints`
@@ -213,7 +213,7 @@ the prototype of the resulting ABC's prototype and/or ABC.
  
 The returned function will also have a method [`implemented_by`](#implemented-by). 
 
-### <a name='implemented-by'></a> `{ABCMeta MyABC}.implemented_by(Function fn)`
+### <a name='implemented-by'></a> {ABCMeta MyABC}.implemented_by(Function fn)
 
 Call this whenever implement an `ABCMeta` to ensure that the contract specified by the `ABCMeta` is satisified.
  
