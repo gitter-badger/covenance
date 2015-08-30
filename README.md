@@ -106,7 +106,7 @@ In the hook body, `this` is the prototype and/or function.
 
 **Each hook will be invoked on each context (prototype or function) that has `blueprints`.**
 
-**In hooks `this` will point to either the prototype or function.**
+**In hooks, `this` will point to either the prototype or function.**
  
 ### <a name='abc'></a> `blueprints.ABC(...)`
 
@@ -164,13 +164,13 @@ Implement the ABC and register the implementation.
     }
     
     // removing any of the properties above or
-    // not extending ABC will cause this to throw
+    // not extending MyABC will cause this to throw
     //
-    // this verifies that Impl satisfies the blueprint specifications
+    // this call verifies that Impl satisfies the blueprint specifications
     ABC.implemented_by(Impl)
     
-Only subclasses of an ABC can implement the ABC, and they must satisfy the 
-prototype and/or class blueprints, even if the base class provides abstract implementations.
+**Only subclasses of an ABC can implement it, and they must satisfy the 
+prototype and/or class `Blueprints`, even if the base class provides its own implementations.**
 
 Of course, implementations can utilize the base class implementations.
 
