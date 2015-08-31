@@ -104,7 +104,7 @@ In the hook body, `this` is the prototype and/or function.
 
 **Covenants can be specified on the prototype and function simultaneously, the hook API is the same.**
 
-**Each hook will be invoked for each context (prototype or function) that has `blueprints`. In invocations, `this` will point to either the prototype or function.**
+**Each hook will be invoked for each context (prototype or function) that has `covenance`. In invocations, `this` will point to either the prototype or function.**
  
 ### <a name='abc'></a> `covenance.ABC(...)`
 
@@ -129,7 +129,7 @@ Create an *abstract base class*.
           }
         },
         klass: {
-          covenance: covenance.create(
+          covenance: covenance.of(
             ['static1', is_number],
             ['static2', is_function]
           ),
