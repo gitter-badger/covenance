@@ -10,7 +10,7 @@ Developed in [ES6 & Babel](http://babeljs.io/), tested with [tape](https://githu
 
 **Covenant**
 
-A `Covenant` is a *specification for a valid object property*. 
+A `Covenant` is a ***specification for a valid object property***. 
 
 It's defined by two read-only attributes: `attribute` and `validator`.  These are 
 the property name, and the property validator, respectively.
@@ -18,7 +18,7 @@ the property name, and the property validator, respectively.
 **covenanting**
 
 If a `Function` and/or its prototype has a property `covenance` that is an 
-`Array` of `Covenants`, that function can be *covenanted*.
+`Array` of `Covenants` (the result of calling [this method](#create-covenants)), then that function can be *covenanted*.
 
 Covenanting the function gives it a method called `check_covenants` that validates
 the `Covenants` that exist on the function and/or its prototype.
@@ -26,7 +26,7 @@ the `Covenants` that exist on the function and/or its prototype.
 **ABCMeta**
 
 It's often useful for a collection of classes to **share** `Covenants` - this gives
-us the notion of an *Abstract Base Class*, or *ABC*. 
+us the notion of an ***Abstract Base Class***, or ***ABC***. 
 
 **covenance** provides a way of creating such classes - which are modeled as subclasses 
 of the immutable type `ABCMeta`.
@@ -69,9 +69,9 @@ Covenant a class:
     
     new Point(1, 'string') // throws "'y': 'string' failed covenant check"
     
-<a name="covenant-hooks">Pre/post covenanting hooks fire if `covenance` exist on prototype and/or function.</a>
+<a name="covenant-hooks">Pre/post covenanting hooks fire if `covenance` exists on prototype and/or `Function`.</a>
  
-In the hook body, `this` is the prototype and/or function.
+In the hook body, `this` is the prototype or `Function`.
 
     covenance.covenant(Point, {
       pre_covenant() {
@@ -88,7 +88,7 @@ In the hook body, `this` is the prototype and/or function.
 
 <a name='check-covenants-hooks'>Pre/post covenant check hooks fire before/after a `check_covenants` invocation.</a> 
 
-In the hook body, `this` is the prototype and/or function.
+In the hook body, `this` is the prototype or `Function`.
 
     covenance.execute(Point, {
       pre_check_covenants() {
@@ -169,21 +169,23 @@ Implement the ABC and register the implementation.
     
 **Only subclasses of an ABC can implement it, and they must satisfy all `Covenants` in the prototype and/or class `covenance`, even if the ABC provides its own implementations.**
 
-As demonstrated above, implementations can utilize the base class implementations.
+**As demonstrated above, however, implementations can utilize the base class implementations in their own implementations.**
 
 ## API
 
-### covenance.of(...)
+### <a name='create-covenants'></a> covenance.of(...)
 
 Returns an immutable `Array` of `Covenants` for covenanting classes. 
 
 Each positional argument can either be an object `{attribute: [String], validator: [Function]}` or a
 tuple `[[String] attribute, [Function] validator]`.
 
+***This is the only way to create a valid `covenance` on a `Function` or its prototype.***
+
 ### <a name='covenant'></a> covenance.covenant(Function fn, [Object options])
 
-Register `Covenants` on a function `fn`. `fn` must have `covenance` defined on itself
-or its prototype. 
+Register `Covenants` on a function `fn`. `fn` must have a `covenance` property defined on itself
+or its prototype.
 
 Adds a [check_covenants()](#check-covenants) method to `fn`.
 
