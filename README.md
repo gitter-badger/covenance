@@ -75,13 +75,13 @@ In the hook body, `this` is the prototype and/or function.
 
     covenance.covenant(Point, {
       pre_covenant() {
-        // fires before 'covenance' property validation in .covenant()
+        // fires before 'covenance' property check and adding 'check_covenants' in .covenant()
       }
     })
     
     covenance.covenant(Point, {
       post_covenant() {
-        // fires after 'covenance' property validation in .covenant()
+        // fires after 'covenance' property check and adding 'check_covenants' in .covenant()
         // 'this' is the prototype or function
       }
     })
