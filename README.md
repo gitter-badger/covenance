@@ -187,8 +187,9 @@ or its prototype.
 
 Adds a [check_covenants()](#check-covenants) method to `fn`.
 
-Options can be an object with keys `pre_covenant` and/or `post_covenant` mapping 
-to functions, [as discussed above](#covenant-hooks).
+Options can be an object with any combination of keys `pre_covenant`, `post_covenant`, 
+`pre_check_covenants`, `post_check_covenants` mapping to functions, as discussed above 
+[here](#covenant-hooks) and [here](#check-covenants-hooks).
 
 **Aliases**: `assert, execute`
 
@@ -198,10 +199,6 @@ Only available for functions that have been [covenanted](#covenant).
 
 Validates that the specification given in `covenance` is satisfied in `fn`
 and/or `fn.prototype`.
-
-Options can be an object with keys `pre_check_covenants` and/or `post_check_covenants` mapping 
-to functions, [as discussed above](#check-covenants-hooks).
-
 
 ### covenance.ABC(Object spec)
 
