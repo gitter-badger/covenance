@@ -69,7 +69,7 @@ Covenant a class:
     
     new Point(1, 'string') // throws "'y': 'string' failed covenant check"
     
-<a name="execute-hooks">Pre/post covenanting hooks fire if `covenance` exist on prototype and/or function.</a>
+<a name="covenant-hooks">Pre/post covenanting hooks fire if `covenance` exist on prototype and/or function.</a>
  
 In the hook body, `this` is the prototype and/or function.
 
