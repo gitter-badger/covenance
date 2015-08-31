@@ -1,4 +1,4 @@
-import {is_blueprinted, ok_blueprints, BLUEPRINTS_KEY} from './blueprinted'
+import {is_blueprinted, check_blueprints, BLUEPRINTS_KEY} from './blueprinted'
 import {
   merge_own,
   is_string,
@@ -57,10 +57,10 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
       // The own flag should be true; we want to ignore
       // the blueprint props specified in ABC when validating the subclass.
       if (ABC.prototype[BLUEPRINTS_KEY]) {
-        ok_blueprints(fn.prototype, ABC.prototype[BLUEPRINTS_KEY], true)
+        check_blueprints(fn.prototype, ABC.prototype[BLUEPRINTS_KEY], true)
       }
       if (ABC[BLUEPRINTS_KEY]) {
-        ok_blueprints(fn, ABC[BLUEPRINTS_KEY], true)
+        check_blueprints(fn, ABC[BLUEPRINTS_KEY], true)
       }
       return fn
     }

@@ -20,7 +20,7 @@ the property name, and the property validator, respectively.
 If a `Function` and/or its prototype has a property `blueprints` that is an 
 `Array` of `Blueprints`, that function can be *blueprinted*.
 
-Blueprinting the function gives it a method called `ok_blueprints` that validates
+Blueprinting the function gives it a method called `check_blueprints` that validates
 the `Blueprints` that exist on the function and/or its prototype.
 
 **ABCMeta**
@@ -59,12 +59,12 @@ Blueprint a class:
       constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.ok_blueprints()
+        this.check_blueprints()
       }
     }
     
     // validates blueprints property exists on Point 
-    // and/or Point.prototype, then mixes in ok_blueprints method
+    // and/or Point.prototype, then mixes in check_blueprints method
     blueprints.execute(Point)
     
     new Point(1, 'string') // throws "'y': 'string' failed blueprint check"
@@ -86,19 +86,19 @@ In the hook body, `this` is the prototype and/or function.
       }
     })
 
-<a name='ok-blueprints-hooks'>Pre/post blueprint validation hooks fire before/after an `ok_blueprints` invocation.</a> 
+<a name='check-blueprints-hooks'>Pre/post blueprint validation hooks fire before/after an `check_blueprints` invocation.</a> 
 
 In the hook body, `this` is the prototype and/or function.
 
     blueprints.execute(Point, {
-      pre_ok_blueprints() {
-        // fires before an ok_blueprints() invocation
+      pre_check_blueprints() {
+        // fires before an check_blueprints() invocation
       }
     })
     
     blueprints.execute(Point, {
-      post_ok_blueprints() {
-        // fires after an ok_blueprints() invocation
+      post_check_blueprints() {
+        // fires after an check_blueprints() invocation
       }
     })
 
@@ -188,18 +188,18 @@ tuple `[[String] attribute, [Function] validator]`.
 Register `Blueprints` on a function `fn`. `fn` must have `blueprints` defined on itself
 or its prototype. 
 
-Adds an [`ok_blueprints()`](#ok-blueprints) method to `fn`.
+Adds an [`check_blueprints()`](#check-blueprints) method to `fn`.
 
 Options can be an object with keys `pre_blueprint` and/or `post_blueprint` mapping 
 to functions, [as discussed above](#execute-hooks).
 
-### <a name='ok-blueprints'></a> blueprinted_fn.ok_blueprints()
+### <a name='check-blueprints'></a> blueprinted_fn.check_blueprints()
 
 Validates that the blueprint specification given in `blueprints` are satisfied in `blueprinted_fn`
 and/or `blueprinted_fn.prototype`.
 
-Options can be an object with keys `pre_ok_blueprints` and/or `post_ok_blueprints` mapping 
-to functions, [as discussed above](#ok-blueprints-hooks).
+Options can be an object with keys `pre_check_blueprints` and/or `post_check_blueprints` mapping 
+to functions, [as discussed above](#check-blueprints-hooks).
 
 
 ### blueprints.ABC(Object spec)

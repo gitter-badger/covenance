@@ -30,12 +30,12 @@ let blueprints = {
       let {
         pre_blueprint,
         post_blueprint,
-        pre_ok_blueprints,
-        post_ok_blueprints
+        pre_check_blueprints,
+        post_check_blueprints
       } = options;
       let hook = (hookspec) => {
         if (is_function(hookspec)) {
-          return {ok_blueprints: hookspec};
+          return {check_blueprints: hookspec};
         }
         return undefined
       };
@@ -45,8 +45,8 @@ let blueprints = {
         postmix: post_blueprint
       },
       {
-        before_hook: hook(pre_ok_blueprints),
-        after_hook: hook(post_ok_blueprints)
+        before_hook: hook(pre_check_blueprints),
+        after_hook: hook(post_check_blueprints)
       });
       return options
     };

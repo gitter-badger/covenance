@@ -9,7 +9,7 @@ const BLUEPRINTS_KEY = 'blueprints';
 // The properties specified by each Blueprint are not restricted to
 // be own properties by default - this can be overridden by setting
 // own = true.
-let ok_blueprints = (target, blueprints, own = false) => {
+let check_blueprints = (target, blueprints, own = false) => {
   for (let blueprint of blueprints) {
     if (own) {
       if (!target.hasOwnProperty(blueprint.attribute)) {
@@ -51,14 +51,14 @@ export default {
       is_blueprinted(this);
     },
 
-    ok_blueprints() {
-      ok_blueprints(this, this[BLUEPRINTS_KEY]);
+    check_blueprints() {
+      check_blueprints(this, this[BLUEPRINTS_KEY]);
       // return the instance/class/prototype so that
-      // after_ok_blueprints hook can consume it
+      // after_check_blueprints hook can consume it
       return this
     }
 
   }),
-  ok_blueprints,
+  check_blueprints,
   is_blueprinted
 }
