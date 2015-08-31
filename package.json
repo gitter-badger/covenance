@@ -1,21 +1,37 @@
 {
   "name": "covenance",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/blueprints.js",
+  "description": "Abstract base and covenanted classes in JavaScript.",
+  "main": "dist/covenance.js",
   "scripts": {
     "test": "./test.js ./**/*.spec.js | node_modules/.bin/faucet",
     "prepublish": "gulp build"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yangmillstheory/blueprint.git"
+    "url": "https://github.com/yangmillstheory/covenance.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yangmillstheory/blueprint/issues"
+    "url": "https://github.com/yangmillstheory/covenance/issues"
   },
+  "keywords": [
+    "es6",
+    "babel",
+    "javascript",
+    "abstract",
+    "abc",
+    "abstract base class",
+    "abstract class",
+    "inheritance",
+    "type-checking",
+    "types",
+    "framework",
+    "gulp",
+    "gulpfriendly",
+    "npm"
+  ],
   "devDependencies": {
     "babel": "^5.8.21",
     "babel-core": "^5.8.22",
@@ -25,7 +41,7 @@
     "gulp-babel": "^5.2.1",
     "tape": "^4.2.0"
   },
-  "homepage": "https://github.com/yangmillstheory/blueprint",
+  "homepage": "https://github.com/yangmillstheory/covenance",
   "dependencies": {
     "frosty": "^1.0.2",
     "mixin-a-lot": "^2.1.0"
