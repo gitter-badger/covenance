@@ -206,13 +206,13 @@ mapping to a `String`, and either a `proto` object or `klass` object with a `cov
 key mapping to an `Array` of `Covenants`.
 
 `proto` and/or `klass` can each contain a `props` object that will be copied into 
-the prototype of the resulting ABC prototype and/or itself.
+the prototype of the ABC and/or itself.
  
-The returned function will also have a method [implemented_by](#implemented-by). 
+In addition to any `props`, the ABC will have a method [implemented_by](#implemented-by). 
 
 ### <a name='implemented-by'></a> {ABCMeta MyABC}.implemented_by(Function fn)
 
-Call this whenever you implement an `ABCMeta` to ensure that its covenance is satisfied.
+Call this whenever you implement an `ABCMeta` to ensure that its `covenance` is satisfied.
  
 It has no side effects besides throwing errors in case your implementation isn't valid.
 
