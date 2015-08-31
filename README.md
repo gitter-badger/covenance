@@ -185,7 +185,7 @@ tuple `[[String] attribute, [Function] validator]`.
 Register `Covenants` on a function `fn`. `fn` must have `covenance` defined on itself
 or its prototype. 
 
-Adds a [`check_covenants()`](#check-covenants) method to `fn`.
+Adds a [check_covenants()](#check-covenants) method to `fn`.
 
 Options can be an object with keys `pre_covenant` and/or `post_covenant` mapping 
 to functions, [as discussed above](#covenant-hooks).
