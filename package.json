@@ -1,6 +1,6 @@
 {
   "name": "covenance",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Abstract base and covenanted classes in JavaScript.",
   "main": "dist/covenance.js",
   "scripts": {
