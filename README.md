@@ -197,8 +197,7 @@ Options can be an object with any combination of keys `pre_covenant`, `post_cove
 
 Only available for functions that have been [covenanted](#covenant).
 
-Validates that the specification given in `covenance` is satisfied in `fn`
-and/or `fn.prototype`.
+Validates that the `covenance` is satisfied in `fn` and/or `fn.prototype`.
 
 ### covenance.ABC(Object spec)
 
