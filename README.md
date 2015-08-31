@@ -1,56 +1,56 @@
-# blueprint
+# covenance
 
 [![Build Status](https://travis-ci.org/yangmillstheory/blueprint.svg?branch=master)](https://travis-ci.org/yangmillstheory/blueprint)
 
-Abstract base and blueprinted classes in JavaScript. 
+Abstract base and covenanted classes in JavaScript. 
 
 Developed in [ES6 & Babel](http://babeljs.io/), tested with [tape](https://github.com/substack/tape), built with [gulpjs](http://gulpjs.com/), distributed via [NPM](fixme).
 
 ## Concepts
 
-**Blueprint**
+**Covenant**
 
-A `Blueprint` is a *specification for a valid object property*. 
+A `Covenant` is a *specification for a valid object property*. 
 
 It's defined by two read-only attributes: `attribute` and `validator`.  These are 
 the property name, and the property validator, respectively.
 
-**blueprinting**
+**covenanting**
 
-If a `Function` and/or its prototype has a property `blueprints` that is an 
-`Array` of `Blueprints`, that function can be *blueprinted*.
+If a `Function` and/or its prototype has a property `covenance` that is an 
+`Array` of `Covenants`, that function can be *covenanted*.
 
-Blueprinting the function gives it a method called `check_blueprints` that validates
-the `Blueprints` that exist on the function and/or its prototype.
+Covenanting the function gives it a method called `check_covenants` that validates
+the `Covenants` that exist on the function and/or its prototype.
 
 **ABCMeta**
 
-It's often useful for a collection of classes to share `Blueprints` - this gives
+It's often useful for a collection of classes to **share** `Covenants` - this gives
 us the notion of an *Abstract Base Class*, or *ABC*. 
 
-The framework provides a way of creating such classes - which are modeled as subclasses 
+**covenance** provides a way of creating such classes - which are modeled as subclasses 
 of the immutable type `ABCMeta`.
 
 ## Install
 
-    $ npm install --save blueprint
+    $ npm install --save covenance
     
     
 ## Usage
 
 Import the module:
 
-    import {blueprints} from 'blueprint'
+    import {covenance} from 'covenance'
 
-### `blueprints.execute()`
+### `covenance.covenant(Function fn)`
     
-Blueprint a class:
+Covenant a class:
 
     import {is_number} from './utilities'
     
     class Point {
-      get blueprints() {
-        return blueprints.create(
+      get covenance() {
+        return covenance.of(
           ['x', is_number],
           ['y', is_number]
         )
@@ -59,66 +59,64 @@ Blueprint a class:
       constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.check_blueprints()
+        this.check_covenants()
       }
     }
     
-    // validates blueprints property exists on Point 
-    // and/or Point.prototype, then mixes in check_blueprints method
-    blueprints.execute(Point)
+    // validates 'covenance' property exists on Point 
+    // and/or Point.prototype, then mixes in check_covenants method
+    covenance.covenant(Point)
     
-    new Point(1, 'string') // throws "'y': 'string' failed blueprint check"
+    new Point(1, 'string') // throws "'y': 'string' failed covenant check"
     
-<a name="execute-hooks">Pre/post blueprinting hooks fire if `blueprints` exist on prototype and/or function.</a>
+<a name="execute-hooks">Pre/post covenanting hooks fire if `covenance` exist on prototype and/or function.</a>
  
 In the hook body, `this` is the prototype and/or function.
 
-    blueprints.execute(Point, {
-      pre_blueprint() {
-        // fires before blueprints property validation in .execute()
+    covenance.covenant(Point, {
+      pre_covenant() {
+        // fires before 'covenance' property validation in .covenant()
       }
     })
     
-    blueprints.execute(Point, {
-      post_blueprint() {
-        // fires after blueprints property validation in .execute()
+    covenance.covenant(Point, {
+      post_covenant() {
+        // fires after 'covenance' property validation in .covenant()
         // 'this' is the prototype or function
       }
     })
 
-<a name='check-blueprints-hooks'>Pre/post blueprint validation hooks fire before/after an `check_blueprints` invocation.</a> 
+<a name='check-covenants-hooks'>Pre/post covenant check hooks fire before/after a `check_covenants` invocation.</a> 
 
 In the hook body, `this` is the prototype and/or function.
 
-    blueprints.execute(Point, {
-      pre_check_blueprints() {
-        // fires before an check_blueprints() invocation
+    covenance.execute(Point, {
+      pre_check_covenants() {
+        // fires before a check_covenants() invocation
       }
     })
     
-    blueprints.execute(Point, {
-      post_check_blueprints() {
-        // fires after an check_blueprints() invocation
+    covenance.execute(Point, {
+      post_check_covenants() {
+        // fires after a check_covenants() invocation
       }
     })
 
-**Blueprints can be specified on the prototype and function simultaneously, the hook API is the same.**
+**Covenants can be specified on the prototype and function simultaneously, the hook API is the same.**
 
-**Each hook will be invoked on each context (prototype or function) that has `blueprints`.**
-
-**In hooks, `this` will point to either the prototype or function.**
+**Each hook will be invoked for each context (prototype or function) that has `blueprints`. In invocations, `this` will point to either the prototype or function.**
  
-### <a name='abc'></a> `blueprints.ABC(...)`
+### <a name='abc'></a> `covenance.ABC(...)`
 
 Create an *abstract base class*.
     
     import {is_string, is_function, is_number} from './utilities'
 
-    let MyABC = blueprints.ABC({
+    let MyABC = covenance.ABC({
       ABC({
         name: 'MyABC',
         proto: {
-          blueprints: blueprints.create(
+          covenance: covenance.of(
             ['proto1', is_string],
             ['proto2', is_function]
           ),
@@ -131,7 +129,7 @@ Create an *abstract base class*.
           }
         },
         klass: {
-          blueprints: blueprints.create(
+          covenance: covenance.create(
             ['static1', is_number],
             ['static2', is_function]
           ),
@@ -166,60 +164,63 @@ Implement the ABC and register the implementation.
     // removing any of the properties above or
     // not extending MyABC will cause this to throw
     //
-    // this call verifies that Impl satisfies the blueprint specifications
+    // this call verifies that Impl satisfies the covenance
     ABC.implemented_by(Impl)
     
-**Only subclasses of an ABC can implement it, and they must satisfy the 
-prototype and/or class `Blueprints`, even if the base class provides its own implementations.**
+**Only subclasses of an ABC can implement it, and they must satisfy all `Covenants` in the prototype and/or class `covenance`, even if the ABC provides its own implementations.**
 
-Of course, implementations can utilize the base class implementations.
+As demonstrated above, implementations can utilize the base class implementations.
 
 ## API
 
-### blueprints.create(...)
+### covenance.of(...)
 
-Create an immutable `Array` of `Blueprints` for blueprinting classes. 
+Returns an immutable `Array` of `Covenants` for covenanting classes. 
 
 Each positional argument can either be an object `{attribute: [String], validator: [Function]}` or a
 tuple `[[String] attribute, [Function] validator]`.
 
-### blueprints.execute(Function fn, [Object options])
+### <a name='covenant'></a> covenance.covenant(Function fn, [Object options])
 
-Register `Blueprints` on a function `fn`. `fn` must have `blueprints` defined on itself
+Register `Covenants` on a function `fn`. `fn` must have `covenance` defined on itself
 or its prototype. 
 
-Adds an [`check_blueprints()`](#check-blueprints) method to `fn`.
+Adds a [`check_covenants()`](#check-covenants) method to `fn`.
 
-Options can be an object with keys `pre_blueprint` and/or `post_blueprint` mapping 
-to functions, [as discussed above](#execute-hooks).
+Options can be an object with keys `pre_covenant` and/or `post_covenant` mapping 
+to functions, [as discussed above](#covenant-hooks).
 
-### <a name='check-blueprints'></a> blueprinted_fn.check_blueprints()
+**Aliases**: `assert, execute`
 
-Validates that the blueprint specification given in `blueprints` are satisfied in `blueprinted_fn`
-and/or `blueprinted_fn.prototype`.
+### <a name='check-covenants'></a> fn.check_covenants()
 
-Options can be an object with keys `pre_check_blueprints` and/or `post_check_blueprints` mapping 
-to functions, [as discussed above](#check-blueprints-hooks).
+Only available for functions that have been [covenanted](#covenant).
+
+Validates that the specification given in `covenance` is satisfied in `fn`
+and/or `fn.prototype`.
+
+Options can be an object with keys `pre_check_covenants` and/or `post_check_covenants` mapping 
+to functions, [as discussed above](#check-covenants-hooks).
 
 
-### blueprints.ABC(Object spec)
+### covenance.ABC(Object spec)
 
 Return a subclass of `ABCMeta` with the provided spec, which should include a `name`
-mapping to a `String`, and either a `proto` object or `klass` object with a `blueprints`
-key mapping to an `Array` of `Blueprints`.
+mapping to a `String`, and either a `proto` object or `klass` object with a `covenance`
+key mapping to an `Array` of `Covenants`.
 
 `proto` and/or `klass` can each contain a `props` object that will be copied into 
-the prototype of the resulting ABC and/or its prototype.
+the prototype of the resulting ABC prototype and/or itself.
  
 The returned function will also have a method [implemented_by](#implemented-by). 
 
 ### <a name='implemented-by'></a> {ABCMeta MyABC}.implemented_by(Function fn)
 
-Call this whenever implement an `ABCMeta` to ensure that the contract specified by the `ABCMeta` is satisified.
+Call this whenever you implement an `ABCMeta` to ensure that its covenance is satisfied.
  
 It has no side effects besides throwing errors in case your implementation isn't valid.
 
-**See the [tests](https://github.com/yangmillstheory/blueprint/blob/master/src/abc.spec.js), 
+**See the [tests](https://github.com/yangmillstheory/covenance/blob/master/src/abc.spec.js), 
 and the [discussion above](#abc) for more detail.**
 
 ## Contributing
@@ -228,7 +229,7 @@ and the [discussion above](#abc) for more detail.**
 
 Get the source.
 
-    $ git clone git@github.com:yangmillstheory/blueprint
+    $ git clone git@github.com:yangmillstheory/covenance
 
 Install dependencies.
     
