@@ -1,6 +1,6 @@
 # covenance
 
-[![Build Status](https://travis-ci.org/yangmillstheory/blueprint.svg?branch=master)](https://travis-ci.org/yangmillstheory/blueprint)
+[![Build Status](https://travis-ci.org/yangmillstheory/covenance.svg?branch=master)](https://travis-ci.org/yangmillstheory/covenance)
 
 Abstract base and covenanted classes in JavaScript. 
 
