@@ -1,4 +1,4 @@
-import {is_blueprinted, check_blueprints, BLUEPRINTS_KEY} from './blueprinted'
+import {is_covenanted, check_covenants, COVENANCE_KEY} from './covenanted'
 import {
   merge_own,
   is_string,
@@ -14,7 +14,7 @@ const USAGE = `Pass a valid ABC spec:
     name: [String],
     (proto,klass): {
       props: [Object],
-      blueprints: [Array of Blueprints]
+      covenance: [Array of Covenants]
     }
   }`;
 
@@ -31,16 +31,16 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
       }
     };`)();
   inherit(ABC, ABCMeta);
-  // Copy the spec (static and proto props and blueprints) into the new ABC.
+  // Copy the spec (static and proto props and covenance) into the new ABC.
   merge_own(ABC.prototype, proto.props, {
-    [BLUEPRINTS_KEY]: proto[BLUEPRINTS_KEY]
+    [COVENANCE_KEY]: proto[COVENANCE_KEY]
   });
   merge_own(ABC, klass.props,
     {
-      [BLUEPRINTS_KEY]: klass[BLUEPRINTS_KEY]
+      [COVENANCE_KEY]: klass[COVENANCE_KEY]
     },
     {
-    // Check that a subclass satisfies the ABC blueprints.
+    // Check that a subclass satisfies the ABC covenance.
     //
     // Call this with the subclass whenever you subclass an ABC.
     implemented_by(fn) {
@@ -54,13 +54,13 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
       ok_fn();
       // Verify the ABC contracts.
       //
-      // The own flag should be true; we want to ignore
-      // the blueprint props specified in ABC when validating the subclass.
-      if (ABC.prototype[BLUEPRINTS_KEY]) {
-        check_blueprints(fn.prototype, ABC.prototype[BLUEPRINTS_KEY], true)
+      // The "own" flag is true because we want to ignore
+      // the covenance attributes specified in ABC when validating the subclass.
+      if (ABC.prototype[COVENANCE_KEY]) {
+        check_covenants(fn.prototype, ABC.prototype[COVENANCE_KEY], true)
       }
-      if (ABC[BLUEPRINTS_KEY]) {
-        check_blueprints(fn, ABC[BLUEPRINTS_KEY], true)
+      if (ABC[COVENANCE_KEY]) {
+        check_covenants(fn, ABC[COVENANCE_KEY], true)
       }
       return fn
     }
@@ -71,7 +71,7 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
 export default {
   ABC({name, proto, klass} = {}) {
     // Verify valid class name, and one of proto or
-    // klass are objects with valid blueprints.
+    // klass are objects with valid covenance.
     let ok_spec = (name, proto, klass) => {
       if (!is_string(name)) {
         throw new Error(USAGE)
@@ -81,18 +81,18 @@ export default {
       if (!is_object_literal(proto) && !is_object_literal(klass)) {
         throw new Error(USAGE)
       }
-      let is_obj_and_blueprinted = (thing) => {
+      let exists_and_covenanted = (thing) => {
         return () => {
           if (!thing) {
             throw new Error()
           }
-          is_blueprinted(thing);
+          is_covenanted(thing);
         }
       };
-      // Pass if at least one of klass or proto was specified and blueprinted.
+      // Pass if at least one of klass or proto was specified and covenanted.
       appeal(
-        is_obj_and_blueprinted(proto),
-        is_obj_and_blueprinted(klass),
+        exists_and_covenanted(proto),
+        exists_and_covenanted(klass),
         USAGE
       );
       return [name, proto, klass]

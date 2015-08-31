@@ -2,19 +2,19 @@ import {merge_own, is_object_literal, is_string, is_function} from './utilities'
 import frosty from 'frosty'
 
 
-class Blueprint {
+class Covenant {
   constructor({attribute, validator}) {
     this.attribute = attribute;
     this.validator = validator;
   }
 }
 
-frosty.freeze(Blueprint.prototype, 'attribute', 'validator');
+frosty.freeze(Covenant.prototype, 'attribute', 'validator');
 
 const USAGE = `
 Expected {attribute: [string], validator: [function]}, or ([string], [function]).`;
 
-let __make_blueprint__ = function() {
+let __make_covenant__ = function() {
   // use function() to create new arguments scope
   let ok_spec = (attribute, validator) => {
     if (!is_string(attribute)) {
@@ -42,23 +42,23 @@ let __make_blueprint__ = function() {
     }
     return [attribute, validator];
   };
-  return new Blueprint(ok_spec(...parse_spec(arguments)))
+  return new Covenant(ok_spec(...parse_spec(arguments)))
 };
 
 export default {
-  blueprint: {
-    // This is the only exported way to create Blueprints.
+  Covenants: {
+    // This is the only exported way to create Covenants.
     //
-    // Returns an immutable Array of Blueprints.
-    Blueprints(...specs) {
+    // Returns an immutable Array of Covenants.
+    of(...specs) {
       if (!specs.length) {
         throw new Error(USAGE)
       }
       return Object.freeze(specs.map((spec) => {
         if (Array.isArray(spec)) {
-          return __make_blueprint__(...spec);
+          return __make_covenant__(...spec);
         } else if (is_object_literal(spec)) {
-          return __make_blueprint__(spec);
+          return __make_covenant__(spec);
         } else {
           throw new Error(USAGE)
         }
@@ -66,7 +66,7 @@ export default {
     },
 
     is(thing) {
-      return thing instanceof Blueprint
+      return thing instanceof Covenant
     }
   }
-}
+};

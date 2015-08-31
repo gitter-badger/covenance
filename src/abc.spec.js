@@ -2,7 +2,7 @@ import test from 'tape'
 import {is_string, is_function, is_number} from './utilities'
 
 import {ABC, ABCMeta} from './abc'
-import {blueprints} from './blueprints'
+import {covenance} from './covenance'
 
 
 test('should reject a spec without a class name', t => {
@@ -34,29 +34,29 @@ test('should reject a spec with no klass or proto objects', t => {
   t.end()
 });
 
-test('should reject a spec with invalid klass or proto blueprints', t => {
+test('should reject a spec with invalid klass or proto covenance', t => {
   let name = 'ExampleName';
   let specs = [
-    { // no blueprints at all
+    { // no covenance at all
       name,
       proto: {}
     },
-    { // null blueprints on klass, none on proto
+    { // null covenance on klass, none on proto
       name,
       proto: {
         props: {
           foo: 1
         }
       },
-      klass: {blueprints: null}
+      klass: {covenance: null}
     },
-    { // invalid blueprints on proto, none on klass
+    { // invalid covenance on proto, none on klass
       name,
-      proto: {blueprints: 1}
+      proto: {covenance: 1}
     },
-    { // null blueprints on klass, none on proto
+    { // null covenance on klass, none on proto
       name,
-      klass: {blueprints: []}
+      klass: {covenance: []}
     }
   ];
   for (let spec of specs) {
@@ -67,7 +67,7 @@ test('should reject a spec with invalid klass or proto blueprints', t => {
   t.end()
 });
 
-test('should accept a spec with at least one valid blueprint', t => {
+test('should accept a spec with at least one valid covenance', t => {
   let spec = {
     name: 'ExampleName',
     proto: {
@@ -76,7 +76,7 @@ test('should accept a spec with at least one valid blueprint', t => {
       }
     },
     klass: {
-      blueprints: blueprints.create(['attribute', is_string])
+      covenance: covenance.of(['attribute', is_string])
     }
   };
   t.doesNotThrow(() => {
@@ -88,14 +88,14 @@ test('should accept a spec with at least one valid blueprint', t => {
 
 // Creates an Example ABC with:
 //
-//  - two proto specs with two abstract implementations
-//  - two class specs with one abstract implementation
+//  - two proto covenants with two abstract implementations
+//  - two class covenants with one abstract implementation
 //
 const ExampleABC = (name = 'ExampleABC') => {
   return ABC({
     name,
     proto: {
-      blueprints: blueprints.create(
+      covenance: covenance.of(
         ['proto1', is_string],
         ['proto2', is_function]
       ),
@@ -107,7 +107,7 @@ const ExampleABC = (name = 'ExampleABC') => {
       }
     },
     klass: {
-      blueprints: blueprints.create(
+      covenance: covenance.of(
         ['static1', is_number],
         ['static2', is_function]
       ),
@@ -156,7 +156,7 @@ test('should not be implemented_by a non-subclass', t => {
   t.end()
 });
 
-test("should throw when implementation doesn't implement all proto blueprints", t => {
+test("should throw when implementation doesn't implement all proto covenants", t => {
   let ABC = ExampleABC();
 
   t.throws(() => {
@@ -170,7 +170,7 @@ test("should throw when implementation doesn't implement all proto blueprints", 
   t.end()
 });
 
-test("should throw when implementation doesn't implement all static blueprints", t => {
+test("should throw when implementation doesn't implement all static covenants", t => {
   let ABC = ExampleABC();
 
   t.throws(() => {
