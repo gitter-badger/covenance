@@ -1,4 +1,4 @@
-import {merge_own, is_object_literal, is_string, is_function} from './utilities'
+import {is_object_literal, is_string, is_function} from './utilities'
 import frosty from 'frosty'
 
 

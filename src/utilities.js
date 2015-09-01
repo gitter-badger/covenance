@@ -7,29 +7,10 @@ const is_type_of = (type) => {
 let is_string = is_type_of('string');
 let is_function = is_type_of('function');
 let is_number = is_type_of('number');
+let is_boolean = is_type_of('boolean');
 let is_object_literal = (thing) => {
   let is_object = is_type_of('object');
   return thing && is_object(thing) && !Array.isArray(thing)
-};
-
-// Merges own undefined keys from sources into sources.
-const merge_own = (target, ...sources) => {
-  let merge_one = (obj) => {
-    if (!obj) {
-      return
-    }
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (obj[key] !== undefined) {
-          target[key] = obj[key]
-        }
-      }
-    }
-  };
-  for (let source of sources) {
-    merge_one(source)
-  }
-  return target
 };
 
 // Invoke each of the specified functions, throwing an error
@@ -73,8 +54,46 @@ const appeal = function() {
   }
 };
 
+// Merges own undefined keys from sources into sources.
+const merge_own = function() {
+  let parse_args = () => {
+    let args = Array.prototype.slice.call(arguments);
+    let overwrite;
+    if (!is_boolean(args[args.length - 1])) {
+      overwrite = true
+    } else {
+      overwrite = args.pop()
+    }
+    return [args[0], args.slice(1), overwrite]
+  };
+  let [target, sources, overwrite] = parse_args();
+  let merge_one = (source) => {
+    let merge_undefined = (target, key) => {
+      if (source[key] !== undefined) {
+        target[key] = source[key]
+      }
+    };
+    if (!source) {
+      return
+    }
+    for (let key of Object.getOwnPropertyNames(source)) {
+      if (target.hasOwnProperty(key)) {
+        if (overwrite) {
+          merge_undefined(target, key)
+        }
+      } else {
+        merge_undefined(target, key)
+      }
+    }
+  };
+  for (let source of sources) {
+    merge_one(source)
+  }
+  return target
+};
 
-const inherit = (subfn, superfn) => {
+const abstract_inherit = (subfn, superfn) => {
+  let proto_props = merge_own({}, subfn.prototype)
   subfn.prototype = Object.create(superfn.prototype, {
     constructor: {
       value: subfn,
@@ -83,8 +102,9 @@ const inherit = (subfn, superfn) => {
       configurable: true
     }
   });
+  merge_own(subfn.prototype, proto_props);
   if (Object.setPrototypeOf) {
-    Object.setPrototypeOf(subfn, superfn);
+    Object.setPrototypeOf(subfn, superfn)
   } else {
     subfn.__proto__ = superfn;
   }
@@ -92,10 +112,11 @@ const inherit = (subfn, superfn) => {
 
 export default {
   appeal,
-  inherit,
+  abstract_inherit,
   is_string,
   is_function,
   is_number,
+  is_boolean,
   is_object_literal,
   merge_own
 }
