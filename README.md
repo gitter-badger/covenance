@@ -105,7 +105,7 @@ In the hook body, `this` is the prototype or `Function`.
 
 **Each hook will be invoked for each context (prototype or function) that has `covenance`. In invocations, `this` will point to either the prototype or function.**
  
-### <a name='abc'></a> `covenance.ABC(...)`
+### <a name='abc'></a> `ABC(...)`
 
 Create an *abstract base class*.
     
