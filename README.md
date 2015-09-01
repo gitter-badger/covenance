@@ -15,6 +15,14 @@ A `Covenant` is a ***specification for a valid object property***.
 It's defined by two read-only attributes: `attribute` and `validator`.  These are 
 the property name, and the property validator, respectively.
 
+An covenanted object `obj` satisfies a `Covenant` `covenant` if and only if
+  
+  * `obj[covenant.attribute]` isn't `undefined`
+  * `covenant.validator(obj[covenant.attribute])` is [truthy](https://developer.mozilla.org/en-US/docs/Glossary/Truthy)
+  
+If either of these fail to hold, the object property is in an invalid state, and errors will
+be thrown when [covenant checks](#check-covenants) are invoked.
+  
 **covenance**
 
 If a `Function` and/or its prototype has a property `covenance` that is an 
