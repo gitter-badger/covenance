@@ -10,14 +10,18 @@ const COVENANCE_KEY = 'covenance';
 // be own properties by default - this can be overridden by setting
 // own = true.
 let check_covenants = (target, covenance, own = false) => {
+  let covenant_broken = (covenant) => {
+    return `'${covenant.attribute}': '${target[covenant.attribute]}' failed covenant check`;
+  };
   for (let covenant of covenance) {
     if (own) {
       if (!target.hasOwnProperty(covenant.attribute)) {
         throw new TypeError(`Expected '${covenant.attribute}' to be own property on target`)
       }
+    } else if (target[covenant.attribute] === undefined) {
+      throw new TypeError(covenant_broken(covenant));
     } else if (!covenant.validator(target[covenant.attribute])) {
-      throw new TypeError(
-        `'${covenant.attribute}': '${target[covenant.attribute]}' failed covenant check`);
+      throw new TypeError(covenant_broken(covenant));
     }
   }
   return true
