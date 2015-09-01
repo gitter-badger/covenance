@@ -113,34 +113,34 @@ Create an *abstract base class*.
     import {ABC} from 'covenance'
 
     let MyABC = ABC({
-        name: 'MyABC',
-        proto: {
-          covenance: covenance.of(
-            ['proto1', is_string],
-            ['proto2', is_function]
-          ),
-          // optional abstract implementations, subclasses can call up
-          props: {
-            proto1: 'proto1',
-            proto2() {
-              return 'proto2'
-            }
-          }
-        },
-        klass: {
-          covenance: covenance.of(
-            ['static1', is_number],
-            ['static2', is_function]
-          ),
-          // optional abstract implementations, subclasses can call up
-          props: {
-            static1: 999
+      name: 'MyABC',
+      proto: {
+        covenance: covenance.of(
+          ['proto1', is_string],
+          ['proto2', is_function]
+        ),
+        // optional abstract implementations, subclasses can call up
+        props: {
+          proto1: 'proto1',
+          proto2() {
+            return 'proto2'
           }
         }
-      });
-      
-      MyABC.name  // 'MyABC'
-      new MyABC() // Error - can't instantiate abstract class
+      },
+      klass: {
+        covenance: covenance.of(
+          ['static1', is_number],
+          ['static2', is_function]
+        ),
+        // optional abstract implementations, subclasses can call up
+        props: {
+          static1: 999
+        }
+      }
+    });
+    
+    MyABC.name  // 'MyABC'
+    new MyABC() // Error - can't instantiate abstract class
       
 Implement the ABC and register the implementation. 
 
@@ -165,6 +165,23 @@ Implement the ABC and register the implementation.
     // this call verifies that Impl satisfies the covenance
     // and causes Impl to inherit from MyABC
     MyABC.implementation(Impl)
+
+Since the `implementation(Function fn)` returns `fn`, a smoother way to write this is
+
+    let Impl = MyABC.implementation(class Impl {
+      get proto1() {
+        return `Impl_proto1_${this._proto1}`'
+      }
+      proto2() {
+        return super.proto2()
+      }
+      static get static1() {
+        return super.static1 + 1000
+      }
+      static static2() {
+        return 'Impl_static2'
+      }
+    });
     
 **Implemenations of an ABC must satisfy all `Covenants` in the prototype and/or class `covenance`, even if the ABC provides its own implementations.**
 
