@@ -5,7 +5,7 @@ import {
   is_object_literal,
   is_function,
   appeal,
-  abstract_inherit
+  ABC_inherit
 } from './utilities'
 
 const CLASSNAME_PATTERN = /^([A-Z][A-Za-z0-9]+)+$/;
@@ -36,7 +36,7 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
         throw new Error("Can't instantiate abstract class")
       }
     };`)();
-  abstract_inherit(new_ABC, ABCMeta);
+  ABC_inherit(new_ABC, ABCMeta);
   // Copy the spec (static and proto props and covenance) into the new ABC.
   merge_own(new_ABC.prototype, proto.props, {
     [COVENANCE_KEY]: proto[COVENANCE_KEY]
@@ -57,7 +57,7 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
         };
         ok_fn();
         if (!(subfn.prototype instanceof new_ABC)) {
-          abstract_inherit(subfn, new_ABC)
+          ABC_inherit(subfn, new_ABC)
         }
         // Verify the ABC contracts.
         //

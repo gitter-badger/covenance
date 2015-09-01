@@ -92,8 +92,10 @@ const merge_own = function() {
   return target
 };
 
-const abstract_inherit = (subfn, superfn) => {
-  let proto_props = merge_own({}, subfn.prototype)
+const ABC_inherit = (subfn, superfn) => {
+  // store a temporary copy, this gets
+  // copied back into subfn.prototype
+  let proto_props = merge_own({}, subfn.prototype);
   subfn.prototype = Object.create(superfn.prototype, {
     constructor: {
       value: subfn,
@@ -103,6 +105,8 @@ const abstract_inherit = (subfn, superfn) => {
     }
   });
   merge_own(subfn.prototype, proto_props);
+  // not sure about the details of this;
+  // it was taken straight from babel
   if (Object.setPrototypeOf) {
     Object.setPrototypeOf(subfn, superfn)
   } else {
@@ -112,7 +116,7 @@ const abstract_inherit = (subfn, superfn) => {
 
 export default {
   appeal,
-  abstract_inherit,
+  ABC_inherit,
   is_string,
   is_function,
   is_number,
