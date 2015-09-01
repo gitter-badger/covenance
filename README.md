@@ -26,7 +26,7 @@ the `Covenants` that exist on the function and/or its prototype.
 **ABCMeta**
 
 It's often useful for a collection of classes to **share** `Covenants` - this gives
-us the notion of an ***Abstract Base Class***, or ***ABC***. 
+us the notion of an ***Abstract Base Class***, or ***ABC***. See this [article](https://en.wikipedia.org/wiki/Abstract_type) for more information.
 
 **covenance** provides a way of creating such classes - which are modeled as subclasses 
 of the immutable type `ABCMeta`.
@@ -34,7 +34,6 @@ of the immutable type `ABCMeta`.
 ## Install
 
     $ npm install --save covenance
-    
     
 ## Usage
 
@@ -111,9 +110,9 @@ In the hook body, `this` is the prototype or `Function`.
 Create an *abstract base class*.
     
     import {is_string, is_function, is_number} from './utilities'
+    import {ABC} from 'covenance'
 
-    let MyABC = covenance.ABC({
-      ABC({
+    let MyABC = ABC({
         name: 'MyABC',
         proto: {
           covenance: covenance.of(
@@ -140,13 +139,12 @@ Create an *abstract base class*.
         }
       });
       
-      
       MyABC.name  // 'MyABC'
       new MyABC() // Error - can't instantiate abstract class
       
 Implement the ABC and register the implementation. 
 
-    class Impl extends MyABC {
+    class Impl {
       get proto1() {
         return `Impl_proto1_${this._proto1}`'
       }
@@ -165,11 +163,12 @@ Implement the ABC and register the implementation.
     // not extending MyABC will cause this to throw
     //
     // this call verifies that Impl satisfies the covenance
-    ABC.implemented_by(Impl)
+    // and causes Impl to inherit from MyABC
+    MyABC.implementation(Impl)
     
-**Only subclasses of an ABC can implement it, and they must satisfy all `Covenants` in the prototype and/or class `covenance`, even if the ABC provides its own implementations.**
+**Implemenations of an ABC must satisfy all `Covenants` in the prototype and/or class `covenance`, even if the ABC provides its own implementations.**
 
-**As demonstrated above, however, implementations can utilize the base class implementations in their own implementations.**
+**As demonstrated above, however, implementations can utilize the ABC implementations in their own.**
 
 ## API
 
@@ -193,7 +192,7 @@ Options can be an object with any combination of keys `pre_covenant`, `post_cove
 `pre_check_covenants`, `post_check_covenants` mapping to functions, as discussed above 
 [here](#covenant-hooks) and [here](#check-covenants-hooks).
 
-**Aliases**: `assert, execute`
+**Aliases**: `assert`, `execute`
 
 ### <a name='check-covenants'></a> fn.check_covenants()
 
@@ -201,22 +200,23 @@ Only available for functions that have been [covenanted](#covenant).
 
 Validates that the `covenance` is satisfied in `fn` and/or `fn.prototype`.
 
-### covenance.ABC(Object spec)
+### ABC(Object spec)
 
-Return a subclass of `ABCMeta` with the provided spec, which should include a `name`
-mapping to a `String`, and either a `proto` object or `klass` object with a `covenance`
-key mapping to an `Array` of `Covenants`.
+Return a subclass of `ABCMeta`. The provided spec should include a `String` `name`, 
+and either a `proto` object or `klass` object with a `covenance` key mapping to an `Array` of `Covenants`.
 
 `proto` and/or `klass` can each contain a `props` object that will be copied into 
 the prototype of the ABC and/or itself.
  
-In addition to any `props`, the ABC will have a method [implemented_by](#implemented-by). 
+In addition to any `props`, the ABC will have a method [implementation](#implementation). 
 
-### <a name='implemented-by'></a> {ABCMeta MyABC}.implemented_by(Function fn)
+### <a name='implementation'></a> {ABCMeta MyABC}.implementation(Function fn)
 
 Call this whenever you implement an `ABCMeta` to ensure that its `covenance` is satisfied.
  
-It has no side effects besides throwing errors in case your implementation isn't valid.
+It throws errors in case your implementation isn't valid, and causes `fn` to inherit from `MyABC`.
+ 
+ **Aliases**: `is_implemented`, `implemented_by`
 
 **See the [tests](https://github.com/yangmillstheory/covenance/blob/master/src/abc.spec.js), 
 and the [discussion above](#abc) for more detail.**
