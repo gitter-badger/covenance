@@ -140,9 +140,8 @@ test('should be an instanceof ABCMeta', t => {
 });
 
 test('should not be implementation a non-function', t => {
-  let ABC = ExampleABC();
   t.throws(() => {
-    ABC.implementation(1)
+    ExampleABC().implementation(1)
   }, /Abstract classes can only be implemented by functions$/);
   t.end()
 });
@@ -162,10 +161,8 @@ test("should throw when implementation doesn't implement all proto covenants", t
 });
 
 test("should throw when implementation doesn't implement all static covenants", t => {
-  let ABC = ExampleABC();
-
   t.throws(() => {
-    class I {
+    ExampleABC().implementation(class I {
       get proto1() {
         return 'I_proto1';
       }
@@ -174,38 +171,33 @@ test("should throw when implementation doesn't implement all static covenants", 
       static static2() {
         return 'I_static2'
       }
-    }
-    ABC.implementation(I);
+    });
   }, /Expected 'static1' to be own property on target$/);
   t.end()
 });
 
 test('should register a valid implementation', t => {
-  let ABC = ExampleABC();
-  class I {
-    get proto1() {
-      return 'I_proto1'
-    }
-    proto2() {
-      return super.proto2()
-    }
-    static get static1() {
-      return super.static1 + 1000
-    }
-    static static2() {
-      return 'I_static2'
-    }
-  }
-
   t.doesNotThrow(() => {
-    ABC.implementation(I);
+    ExampleABC().implementation(class I {
+      get proto1() {
+        return 'I_proto1'
+      }
+      proto2() {
+        return super.proto2()
+      }
+      static get static1() {
+        return super.static1 + 1000
+      }
+      static static2() {
+        return 'I_static2'
+      }
+    });
   });
   t.end()
 });
 
 test('should allow an implementation to invoke base abstract methods/properties', t => {
-  let ABC = ExampleABC();
-  class I {
+  let I = ExampleABC().implementation(class I {
     get proto1() {
       return 'I_proto1'
     }
@@ -218,9 +210,8 @@ test('should allow an implementation to invoke base abstract methods/properties'
     static static2() {
       return 'I_static2'
     }
-  }
+  });
 
-  ABC.implementation(I);
   let i = new I();
 
   // Test calling up to the base class
