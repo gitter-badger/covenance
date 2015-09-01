@@ -166,7 +166,7 @@ Implement the ABC and register the implementation.
     // and causes Impl to inherit from MyABC
     MyABC.implementation(Impl)
 
-Since the `implementation(Function fn)` returns `fn`, a smoother way to write this is
+Since `implementation(Function fn)` returns `fn`, a smoother way to write this is
 
     let Impl = MyABC.implementation(class Impl {
       get proto1() {
