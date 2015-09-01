@@ -127,6 +127,27 @@ test('should check static covenants', t => {
   t.end()
 });
 
+test('should no-op failure when covenant attribute is not present', t => {
+  class Example {
+    // using no-op validators
+    get covenance() {
+      return covenance.of(['proto_prop', () => {}])
+    }
+    static get covenance() {
+      return covenance.of(['klass_prop', () => {}])
+    }
+  }
+  covenance.covenant(Example);
+
+  t.throws(() => {
+    Example.check_covenants()
+  }, /^TypeError: 'klass_prop': 'undefined' failed covenant check$/);
+  t.throws(() => {
+    Example.prototype.check_covenants()
+  }, /^TypeError: 'proto_prop': 'undefined' failed covenant check$/);
+  t.end()
+});
+
 test('should accept a pre_covenant hook on static covenants', t => {
   t.plan(2);
   class Example {
