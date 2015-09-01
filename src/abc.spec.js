@@ -139,20 +139,11 @@ test('should be an instanceof ABCMeta', t => {
   t.end()
 });
 
-test('should not be implemented_by a non-function', t => {
+test('should not be implementation a non-function', t => {
   let ABC = ExampleABC();
   t.throws(() => {
-    ABC.implemented_by(1)
+    ABC.implementation(1)
   }, /Abstract classes can only be implemented by functions$/);
-  t.end()
-});
-
-test('should not be implemented_by a non-subclass', t => {
-  let ABC = ExampleABC();
-  class NotASubclass {}
-  t.throws(() => {
-    ABC.implemented_by(NotASubclass)
-  }, new RegExp(`${NotASubclass.name} is not a subclass of ${ABC.name}`));
   t.end()
 });
 
@@ -160,12 +151,12 @@ test("should throw when implementation doesn't implement all proto covenants", t
   let ABC = ExampleABC();
 
   t.throws(() => {
-    class I extends ABC {
+    class I {
       get proto1() {
         return 'I_proto1';
       }
     }
-    ABC.implemented_by(I);
+    ABC.implementation(I);
   }, /Expected 'proto2' to be own property on target$/);
   t.end()
 });
@@ -174,7 +165,7 @@ test("should throw when implementation doesn't implement all static covenants", 
   let ABC = ExampleABC();
 
   t.throws(() => {
-    class I extends ABC {
+    class I {
       get proto1() {
         return 'I_proto1';
       }
@@ -184,14 +175,14 @@ test("should throw when implementation doesn't implement all static covenants", 
         return 'I_static2'
       }
     }
-    ABC.implemented_by(I);
+    ABC.implementation(I);
   }, /Expected 'static1' to be own property on target$/);
   t.end()
 });
 
-test('should be implemented_by a valid implementation', t => {
+test('should register a valid implementation', t => {
   let ABC = ExampleABC();
-  class I extends ABC {
+  class I {
     get proto1() {
       return 'I_proto1'
     }
@@ -207,14 +198,14 @@ test('should be implemented_by a valid implementation', t => {
   }
 
   t.doesNotThrow(() => {
-    ABC.implemented_by(I);
+    ABC.implementation(I);
   });
   t.end()
 });
 
 test('should allow an implementation to invoke base abstract methods/properties', t => {
   let ABC = ExampleABC();
-  class I extends ABC {
+  class I {
     get proto1() {
       return 'I_proto1'
     }
@@ -229,8 +220,7 @@ test('should allow an implementation to invoke base abstract methods/properties'
     }
   }
 
-  ABC.implemented_by(I);
-
+  ABC.implementation(I);
   let i = new I();
 
   // Test calling up to the base class
