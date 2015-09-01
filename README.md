@@ -208,7 +208,7 @@ and either a `proto` object or `klass` object with a `covenance` key mapping to 
 `proto` and/or `klass` can each contain a `props` object that will be copied into 
 the prototype of the ABC and/or itself.
  
-In addition to any `props`, the ABC will have a method [implementation](#implementation). 
+In addition to any `props`, the ABC will have a [registration method](#implementation). 
 
 ### <a name='implementation'></a> {ABCMeta MyABC}.implementation(Function fn)
 
