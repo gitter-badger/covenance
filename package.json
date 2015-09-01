@@ -5,7 +5,7 @@
   "main": "dist/covenance.js",
   "scripts": {
     "test": "./test.js ./**/*.spec.js | node_modules/.bin/faucet",
-    "prepublish": "gulp build"
+    "prepublish": "npm test && gulp build"
   },
   "repository": {
     "type": "git",
