@@ -15,7 +15,7 @@ A `Covenant` is a ***specification for a valid object property***.
 It's defined by two read-only attributes: `attribute` and `validator`.  These are 
 the property name, and the property validator, respectively.
 
-**covenanting**
+**covenance**
 
 If a `Function` and/or its prototype has a property `covenance` that is an 
 `Array` of `Covenants` (the result of calling [this method](#create-covenants)), then that function can be *covenanted*.
@@ -89,13 +89,13 @@ In the hook body, `this` is the prototype or `Function`.
 
 In the hook body, `this` is the prototype or `Function`.
 
-    covenance.execute(Point, {
+    covenance.covenant(Point, {
       pre_check_covenants() {
         // fires before a check_covenants() invocation
       }
     })
     
-    covenance.execute(Point, {
+    covenance.covenant(Point, {
       post_check_covenants() {
         // fires after a check_covenants() invocation
       }
