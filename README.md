@@ -216,7 +216,7 @@ Call this whenever you implement an `ABCMeta` to ensure that its `covenance` is 
  
 It throws errors in case your implementation isn't valid, and causes `fn` to inherit from `MyABC`.
  
- **Aliases**: `is_implemented`, `implemented_by`
+**Aliases**: `is_implemented`, `implemented_by`
 
 **See the [tests](https://github.com/yangmillstheory/covenance/blob/master/src/abc.spec.js), 
 and the [discussion above](#abc) for more detail.**
