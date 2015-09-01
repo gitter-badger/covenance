@@ -61,7 +61,6 @@ let covenance = {
   of() {
     return Covenants.of(...arguments)
   }
-
 };
 
 for (let execute_alias of EXECUTE_ALIASES) {

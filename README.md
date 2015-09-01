@@ -167,8 +167,7 @@ Implement the ABC and register the implementation.
       }
     }
     
-    // removing any of the properties above or
-    // not extending MyABC will cause this to throw
+    // removing any of the properties above will cause this to throw
     //
     // this call verifies that Impl satisfies the covenance
     // and causes Impl to inherit from MyABC

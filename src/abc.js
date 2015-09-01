@@ -41,37 +41,35 @@ let __make_ABC__ = (name, proto = {}, klass = {}) => {
   merge_own(new_ABC.prototype, proto.props, {
     [COVENANCE_KEY]: proto[COVENANCE_KEY]
   });
-  merge_own(new_ABC, klass.props,
-    {
-      [COVENANCE_KEY]: klass[COVENANCE_KEY]
-    },
-    {
-      // Check that a class satisfies the ABC covenance.
-      //
-      // Calling this with a class will subclass the ABC if it's not already a subclass.
-      [IMPLEMENT_PROPERTY](subfn) {
-        let ok_fn = () => {
-          if (!is_function(subfn)) {
-            throw new Error(`Abstract classes can only be implemented by functions`)
-          }
-        };
-        ok_fn();
-        if (!(subfn.prototype instanceof new_ABC)) {
-          ABC_inherit(subfn, new_ABC)
+  merge_own(new_ABC, klass.props, {
+    [COVENANCE_KEY]: klass[COVENANCE_KEY]
+  }, {
+    // Check that a class satisfies the ABC covenance.
+    //
+    // Calling this with a class will subclass the ABC if it's not already a subclass.
+    [IMPLEMENT_PROPERTY](subfn) {
+      let ok_fn = () => {
+        if (!is_function(subfn)) {
+          throw new Error(`Abstract classes can only be implemented by functions`)
         }
-        // Verify the ABC contracts.
-        //
-        // The "own" flag is true because we want to ignore
-        // the covenance attributes specified in ABC when validating the subclass.
-        if (new_ABC.prototype[COVENANCE_KEY]) {
-          check_covenants(subfn.prototype, new_ABC.prototype[COVENANCE_KEY], true)
-        }
-        if (new_ABC[COVENANCE_KEY]) {
-          check_covenants(subfn, new_ABC[COVENANCE_KEY], true)
-        }
-        return subfn
+      };
+      ok_fn();
+      if (!(subfn.prototype instanceof new_ABC)) {
+        ABC_inherit(subfn, new_ABC)
       }
-    });
+      // Verify the ABC contracts.
+      //
+      // The "own" flag is true because we want to ignore
+      // the covenance attributes specified in ABC when validating the subclass.
+      if (new_ABC.prototype[COVENANCE_KEY]) {
+        check_covenants(subfn.prototype, new_ABC.prototype[COVENANCE_KEY], true)
+      }
+      if (new_ABC[COVENANCE_KEY]) {
+        check_covenants(subfn, new_ABC[COVENANCE_KEY], true)
+      }
+      return subfn
+    }
+  });
   for (let alias of IMPLEMENT_ALIASES) {
     new_ABC[alias] = new_ABC[IMPLEMENT_PROPERTY]
   }
