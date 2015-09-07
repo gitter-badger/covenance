@@ -1,5 +1,7 @@
 # covenance
 
+[![Join the chat at https://gitter.im/yangmillstheory/covenance](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/yangmillstheory/covenance?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/yangmillstheory/covenance.svg?branch=master)](https://travis-ci.org/yangmillstheory/covenance)
 
 Abstract base and covenanted classes in JavaScript. 
